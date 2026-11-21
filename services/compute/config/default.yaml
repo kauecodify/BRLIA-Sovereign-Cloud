@@ -1,0 +1,7 @@
+# BRLIA BRLIA Compute - Configuracao Padrao
+# Compute Plane para orquestracao de VMs, containers e cargas com GPU
+
+server:
+  port: "8084"
+  mode: "release"
+  shutdown_timeout: 30s

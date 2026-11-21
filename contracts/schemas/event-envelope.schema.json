@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://brlia.cloud/schemas/event-envelope.schema.json",
+  "title": "BRLIA Event Envelope",
+  "type": "object",
+  "required": [
+    "event_id",
+    "event_type",
+    "occurred_at",
+    "producer",
+    "payload"
+  ],
+  "properties": {
+    "event_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "event_type": {
+      "type": "string",
+      "pattern": "^brlia\\.[a-z_]+\\.[a-z_]+$"
+    },
+    "occurred_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "producer": {
+      "type": "string"
+    },
+    "correlation_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "payload": {
+      "type": "object"
+    }
+  }
+}

@@ -1,0 +1,7 @@
+# BRLIA BRLIA Identity - Configuracao Padrao
+# Gerenciamento de identidade, autenticacao OIDC e federacao com Keycloak
+
+server:
+  port: "8083"
+  mode: "release"
+  shutdown_timeout: 30s

@@ -2,23 +2,24 @@ package service
 
 import (
 	"context"
+	"log"
 	"time"
 
-	"github.com/google/uuid"
 	"github.com/brlia/control-api/internal/models"
 	"github.com/brlia/control-api/internal/repository"
+	"github.com/google/uuid"
 )
 
 // OrganizationService provides business logic for organizations
 type OrganizationService struct {
-	repo     *repository.OrganizationRepository
+	repo      *repository.OrganizationRepository
 	auditRepo *repository.AuditRepository
 }
 
 // NewOrganizationService creates a new OrganizationService
 func NewOrganizationService(repo *repository.OrganizationRepository, auditRepo *repository.AuditRepository) *OrganizationService {
 	return &OrganizationService{
-		repo:     repo,
+		repo:      repo,
 		auditRepo: auditRepo,
 	}
 }
@@ -127,18 +128,18 @@ func (s *OrganizationService) logAudit(ctx context.Context, action models.AuditA
 	}
 
 	audit := &models.AuditLog{
-		ID:          uuid.New(),
-		Action:      action,
+		ID:           uuid.New(),
+		Action:       action,
 		ResourceType: resourceType,
-		ResourceID:  resourceID,
+		ResourceID:   resourceID,
 		ResourceName: resourceName,
-		Details:     "",
-		Status:      models.AuditStatusCompleted,
-		CreatedAt:   time.Now(),
-		Metadata:    details,
+		Details:      "",
+		Status:       models.AuditStatusCompleted,
+		CreatedAt:    time.Now(),
+		Metadata:     details,
 	}
 
-	// Store audit log (implementation depends on AuditRepository)
-	// For now, just print to console
-	// In production, this would be persisted to the database
+	if err := s.auditRepo.Create(ctx, audit); err != nil {
+		log.Printf("Failed to persist audit log for organization %s: %v", resourceID, err)
+	}
 }

@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/redis/go-redis/v9"
 	"github.com/brlia/control-api/internal/config"
+	"github.com/redis/go-redis/v9"
 )
 
 // NewRedisClient creates a new Redis client

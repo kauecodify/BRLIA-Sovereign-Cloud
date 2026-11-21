@@ -1,0 +1,7 @@
+# BRLIA BRLIA AI Platform - Configuracao Padrao
+# Treinamento, inferencia e catalogo de modelos de IA
+
+server:
+  port: "8090"
+  mode: "release"
+  shutdown_timeout: 30s

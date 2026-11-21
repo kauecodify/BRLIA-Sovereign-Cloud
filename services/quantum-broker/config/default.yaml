@@ -1,0 +1,7 @@
+# BRLIA BRLIA Quantum Broker - Configuracao Padrao
+# Broker de acesso a processadores quanticos nacionais e parceiros
+
+server:
+  port: "8092"
+  mode: "release"
+  shutdown_timeout: 30s

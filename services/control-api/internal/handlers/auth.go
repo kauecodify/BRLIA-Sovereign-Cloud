@@ -4,10 +4,11 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt/v5"
 	"github.com/brlia/control-api/internal/config"
 	"github.com/brlia/control-api/internal/models"
+	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v5"
+	"github.com/google/uuid"
 )
 
 // GetTokenHandler handles JWT token generation
@@ -16,7 +17,7 @@ func GetTokenHandler(cfg config.AuthConfig) gin.HandlerFunc {
 		var req models.LoginRequest
 		if err := c.ShouldBindJSON(&req); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
-				"error": "Invalid request body",
+				"error":   "Invalid request body",
 				"details": err.Error(),
 			})
 			return
@@ -43,7 +44,7 @@ func GetTokenHandler(cfg config.AuthConfig) gin.HandlerFunc {
 		tokenString, err := token.SignedString([]byte(cfg.JWTSecret))
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{
-				"error": "Failed to generate token",
+				"error":   "Failed to generate token",
 				"details": err.Error(),
 			})
 			return
@@ -60,7 +61,7 @@ func GetTokenHandler(cfg config.AuthConfig) gin.HandlerFunc {
 		refreshTokenString, err := refreshToken.SignedString([]byte(cfg.RefreshSecret))
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{
-				"error": "Failed to generate refresh token",
+				"error":   "Failed to generate refresh token",
 				"details": err.Error(),
 			})
 			return
@@ -71,7 +72,7 @@ func GetTokenHandler(cfg config.AuthConfig) gin.HandlerFunc {
 			RefreshToken: refreshTokenString,
 			TokenType:    "Bearer",
 			ExpiresIn:    int64(cfg.JWTExpiry.Seconds()),
-			UserID:       0, // Replace with actual user ID
+			UserID:       uuid.Nil, // Populated by the identity service in production
 			Username:     req.Username,
 			DisplayName:  req.Username,
 			Email:        "", // Replace with actual email
@@ -86,7 +87,7 @@ func RefreshTokenHandler(cfg config.AuthConfig) gin.HandlerFunc {
 		var req models.TokenRefreshRequest
 		if err := c.ShouldBindJSON(&req); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
-				"error": "Invalid request body",
+				"error":   "Invalid request body",
 				"details": err.Error(),
 			})
 			return
@@ -135,7 +136,7 @@ func RefreshTokenHandler(cfg config.AuthConfig) gin.HandlerFunc {
 		newTokenString, err := newToken.SignedString([]byte(cfg.JWTSecret))
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{
-				"error": "Failed to generate token",
+				"error":   "Failed to generate token",
 				"details": err.Error(),
 			})
 			return
@@ -152,7 +153,7 @@ func RefreshTokenHandler(cfg config.AuthConfig) gin.HandlerFunc {
 		newRefreshTokenString, err := newRefreshToken.SignedString([]byte(cfg.RefreshSecret))
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{
-				"error": "Failed to generate refresh token",
+				"error":   "Failed to generate refresh token",
 				"details": err.Error(),
 			})
 			return

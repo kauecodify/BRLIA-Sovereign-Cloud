@@ -1,0 +1,7 @@
+# BRLIA BRLIA Storage - Configuracao Padrao
+# Data Plane de armazenamento objeto, bloco e arquivo com integracao Ceph
+
+server:
+  port: "8085"
+  mode: "release"
+  shutdown_timeout: 30s

@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/brlia/control-api/internal/models"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/brlia/control-api/internal/models"
 )
 
 // QuotaRepository handles database operations for quotas
@@ -22,7 +22,7 @@ func NewQuotaRepository(db *pgxpool.Pool) *QuotaRepository {
 // Create creates a new quota
 func (r *QuotaRepository) Create(ctx context.Context, quota *models.Quota) error {
 	query := `
-		INSERT INTO quotas (id, organization_id, project_id, resource_type, limit, used, unit, scope, metadata, created_at, updated_at)
+		INSERT INTO quotas (id, organization_id, project_id, resource_type, quota_limit, quota_used, unit, scope, metadata, created_at, updated_at)
 		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
 		RETURNING created_at, updated_at
 	`
@@ -52,7 +52,7 @@ func (r *QuotaRepository) Create(ctx context.Context, quota *models.Quota) error
 // GetByID retrieves a quota by ID
 func (r *QuotaRepository) GetByID(ctx context.Context, id uuid.UUID) (*models.Quota, error) {
 	query := `
-		SELECT id, organization_id, project_id, resource_type, limit, used, unit, scope, created_at, updated_at, deleted_at, metadata
+		SELECT id, organization_id, project_id, resource_type, quota_limit, quota_used, unit, scope, created_at, updated_at, deleted_at, metadata
 		FROM quotas
 		WHERE id = $1 AND deleted_at IS NULL
 	`
@@ -83,7 +83,7 @@ func (r *QuotaRepository) GetByID(ctx context.Context, id uuid.UUID) (*models.Qu
 // List retrieves a paginated list of quotas
 func (r *QuotaRepository) List(ctx context.Context, filter *models.QuotaFilter) ([]*models.Quota, int64, error) {
 	query := `
-		SELECT id, organization_id, project_id, resource_type, limit, used, unit, scope, created_at, updated_at, deleted_at, metadata
+		SELECT id, organization_id, project_id, resource_type, quota_limit, quota_used, unit, scope, created_at, updated_at, deleted_at, metadata
 		FROM quotas
 		WHERE deleted_at IS NULL
 	`
@@ -177,7 +177,7 @@ func (r *QuotaRepository) List(ctx context.Context, filter *models.QuotaFilter) 
 func (r *QuotaRepository) Update(ctx context.Context, quota *models.Quota) error {
 	query := `
 		UPDATE quotas
-		SET limit = $2, used = $3, metadata = $4, updated_at = $5
+		SET quota_limit = $2, quota_used = $3, metadata = $4, updated_at = $5
 		WHERE id = $1 AND deleted_at IS NULL
 		RETURNING updated_at
 	`

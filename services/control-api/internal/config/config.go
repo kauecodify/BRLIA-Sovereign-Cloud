@@ -28,12 +28,12 @@ type RedisConfig struct {
 
 // AuthConfig contains authentication settings
 type AuthConfig struct {
-	Enabled        bool
-	JWTSecret      string
-	JWTExpiry      time.Duration
-	RefreshSecret  string
-	RefreshExpiry  time.Duration
-	Issuer         string
+	Enabled       bool
+	JWTSecret     string
+	JWTExpiry     time.Duration
+	RefreshSecret string
+	RefreshExpiry time.Duration
+	Issuer        string
 }
 
 // ServerConfig contains HTTP server settings

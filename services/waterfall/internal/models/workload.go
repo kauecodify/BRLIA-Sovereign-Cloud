@@ -9,34 +9,34 @@ import (
 
 // Workload represents a unit of work to be executed
 type Workload struct {
-	ID              uuid.UUID       `json:"id" db:"id"`
-	Name            string          `json:"name" db:"name"`
-	Description     string          `json:"description,omitempty" db:"description"`
-	OrganizationID  uuid.UUID       `json:"organization_id" db:"organization_id"`
-	ProjectID       uuid.UUID       `json:"project_id" db:"project_id"`
-	UserID          uuid.UUID       `json:"user_id" db:"user_id"`
-	Type            WorkloadType    `json:"type" db:"type"`
-	Priority        WorkloadPriority `json:"priority" db:"priority"`
-	Status          WorkloadStatus  `json:"status" db:"status"`
-	ResourceType    string          `json:"resource_type" db:"resource_type"`
+	ID                   uuid.UUID            `json:"id" db:"id"`
+	Name                 string               `json:"name" db:"name"`
+	Description          string               `json:"description,omitempty" db:"description"`
+	OrganizationID       uuid.UUID            `json:"organization_id" db:"organization_id"`
+	ProjectID            uuid.UUID            `json:"project_id" db:"project_id"`
+	UserID               uuid.UUID            `json:"user_id" db:"user_id"`
+	Type                 WorkloadType         `json:"type" db:"type"`
+	Priority             WorkloadPriority     `json:"priority" db:"priority"`
+	Status               WorkloadStatus       `json:"status" db:"status"`
+	ResourceType         string               `json:"resource_type" db:"resource_type"`
 	ResourceRequirements ResourceRequirements `json:"resource_requirements" db:"resource_requirements"`
-	Constraints     WorkloadConstraints `json:"constraints,omitempty" db:"constraints"`
-	Dependencies    []uuid.UUID      `json:"dependencies,omitempty" db:"dependencies"`
-	Retries         int             `json:"retries" db:"retries"`
-	MaxRetries      int             `json:"max_retries,omitempty" db:"max_retries"`
-	FailureReason   string          `json:"failure_reason,omitempty" db:"failure_reason"`
-	CreatedAt       time.Time       `json:"created_at" db:"created_at"`
-	ScheduledAt     *time.Time      `json:"scheduled_at,omitempty" db:"scheduled_at"`
-	StartedAt       *time.Time      `json:"started_at,omitempty" db:"started_at"`
-	CompletedAt     *time.Time      `json:"completed_at,omitempty" db:"completed_at"`
-	ExecutionTime   time.Duration   `json:"execution_time,omitempty" db:"execution_time"`
-	Deadline        *time.Time      `json:"deadline,omitempty" db:"deadline"`
-	Timeout         time.Duration   `json:"timeout,omitempty" db:"timeout"`
-	Metadata        map[string]string `json:"metadata,omitempty" db:"metadata"`
-	ClusterID       *uuid.UUID      `json:"cluster_id,omitempty" db:"cluster_id"`
-	ResourceID      *uuid.UUID      `json:"resource_id,omitempty" db:"resource_id"`
-	Cost            float64         `json:"cost,omitempty" db:"cost"`
-	EstimatedCost   float64         `json:"estimated_cost,omitempty" db:"estimated_cost"`
+	Constraints          WorkloadConstraints  `json:"constraints,omitempty" db:"constraints"`
+	Dependencies         []uuid.UUID          `json:"dependencies,omitempty" db:"dependencies"`
+	Retries              int                  `json:"retries" db:"retries"`
+	MaxRetries           int                  `json:"max_retries,omitempty" db:"max_retries"`
+	FailureReason        string               `json:"failure_reason,omitempty" db:"failure_reason"`
+	CreatedAt            time.Time            `json:"created_at" db:"created_at"`
+	ScheduledAt          *time.Time           `json:"scheduled_at,omitempty" db:"scheduled_at"`
+	StartedAt            *time.Time           `json:"started_at,omitempty" db:"started_at"`
+	CompletedAt          *time.Time           `json:"completed_at,omitempty" db:"completed_at"`
+	ExecutionTime        time.Duration        `json:"execution_time,omitempty" db:"execution_time"`
+	Deadline             *time.Time           `json:"deadline,omitempty" db:"deadline"`
+	Timeout              time.Duration        `json:"timeout,omitempty" db:"timeout"`
+	Metadata             map[string]string    `json:"metadata,omitempty" db:"metadata"`
+	ClusterID            *uuid.UUID           `json:"cluster_id,omitempty" db:"cluster_id"`
+	ResourceID           *uuid.UUID           `json:"resource_id,omitempty" db:"resource_id"`
+	Cost                 float64              `json:"cost,omitempty" db:"cost"`
+	EstimatedCost        float64              `json:"estimated_cost,omitempty" db:"estimated_cost"`
 }
 
 // WorkloadType represents the type of workload
@@ -44,7 +44,7 @@ type WorkloadType string
 
 const (
 	WorkloadTypeVM         WorkloadType = "vm"
-	WorkloadTypeContainer   WorkloadType = "container"
+	WorkloadTypeContainer  WorkloadType = "container"
 	WorkloadTypeKubernetes WorkloadType = "kubernetes"
 	WorkloadTypeBatch      WorkloadType = "batch"
 	WorkloadTypeGPU        WorkloadType = "gpu"
@@ -92,118 +92,118 @@ type ResourceRequirements struct {
 
 // WorkloadConstraints represents constraints for workload scheduling
 type WorkloadConstraints struct {
-	RequiredRegion   *string    `json:"required_region,omitempty"`
-	RequiredZone     *string    `json:"required_zone,omitempty"`
-	RequiredCluster  *uuid.UUID `json:"required_cluster,omitempty"`
-	AvoidRegions     []string   `json:"avoid_regions,omitempty"`
-	AvoidZones       []string   `json:"avoid_zones,omitempty"`
-	AvoidClusters    []uuid.UUID `json:"avoid_clusters,omitempty"`
-	RequiredTags     []string   `json:"required_tags,omitempty"`
-	AvoidTags        []string   `json:"avoid_tags,omitempty"`
-	MaxCost          *float64   `json:"max_cost,omitempty"`
-	SLARequirements  *SLARequirements `json:"sla_requirements,omitempty"`
+	RequiredRegion  *string          `json:"required_region,omitempty"`
+	RequiredZone    *string          `json:"required_zone,omitempty"`
+	RequiredCluster *uuid.UUID       `json:"required_cluster,omitempty"`
+	AvoidRegions    []string         `json:"avoid_regions,omitempty"`
+	AvoidZones      []string         `json:"avoid_zones,omitempty"`
+	AvoidClusters   []uuid.UUID      `json:"avoid_clusters,omitempty"`
+	RequiredTags    []string         `json:"required_tags,omitempty"`
+	AvoidTags       []string         `json:"avoid_tags,omitempty"`
+	MaxCost         *float64         `json:"max_cost,omitempty"`
+	SLARequirements *SLARequirements `json:"sla_requirements,omitempty"`
 }
 
 // SLARequirements represents SLA requirements for a workload
 type SLARequirements struct {
 	Availability float64 `json:"availability,omitempty"`
 	LatencyMS    int64   `json:"latency_ms,omitempty"`
-	Throughput  float64 `json:"throughput,omitempty"`
+	Throughput   float64 `json:"throughput,omitempty"`
 }
 
 // WorkloadCreateRequest represents a request to create a workload
 type WorkloadCreateRequest struct {
-	Name            string             `json:"name" binding:"required,min=1,max=100"`
-	Description     string             `json:"description,omitempty" binding:"max=500"`
-	OrganizationID  uuid.UUID          `json:"organization_id" binding:"required"`
-	ProjectID       uuid.UUID          `json:"project_id" binding:"required"`
-	Type            WorkloadType       `json:"type" binding:"required,oneof=vm container kubernetes batch gpu hpc serverless ai quantum"`
-	Priority        WorkloadPriority   `json:"priority,omitempty" binding:"min=0,max=4"`
-	ResourceType    string             `json:"resource_type" binding:"required"`
+	Name                 string               `json:"name" binding:"required,min=1,max=100"`
+	Description          string               `json:"description,omitempty" binding:"max=500"`
+	OrganizationID       uuid.UUID            `json:"organization_id" binding:"required"`
+	ProjectID            uuid.UUID            `json:"project_id" binding:"required"`
+	Type                 WorkloadType         `json:"type" binding:"required,oneof=vm container kubernetes batch gpu hpc serverless ai quantum"`
+	Priority             WorkloadPriority     `json:"priority,omitempty" binding:"min=0,max=4"`
+	ResourceType         string               `json:"resource_type" binding:"required"`
 	ResourceRequirements ResourceRequirements `json:"resource_requirements" binding:"required"`
-	Constraints     WorkloadConstraints `json:"constraints,omitempty"`
-	Dependencies    []uuid.UUID         `json:"dependencies,omitempty"`
-	MaxRetries      int                `json:"max_retries,omitempty" binding:"min=0,max=10"`
-	Deadline        *time.Time         `json:"deadline,omitempty"`
-	Timeout         time.Duration      `json:"timeout,omitempty"`
-	Metadata        map[string]string  `json:"metadata,omitempty"`
+	Constraints          WorkloadConstraints  `json:"constraints,omitempty"`
+	Dependencies         []uuid.UUID          `json:"dependencies,omitempty"`
+	MaxRetries           int                  `json:"max_retries,omitempty" binding:"min=0,max=10"`
+	Deadline             *time.Time           `json:"deadline,omitempty"`
+	Timeout              time.Duration        `json:"timeout,omitempty"`
+	Metadata             map[string]string    `json:"metadata,omitempty"`
 }
 
 // WorkloadUpdateRequest represents a request to update a workload
 type WorkloadUpdateRequest struct {
-	Name            string             `json:"name,omitempty" binding:"omitempty,min=1,max=100"`
-	Description     string             `json:"description,omitempty" binding:"omitempty,max=500"`
-	Priority        WorkloadPriority   `json:"priority,omitempty" binding:"omitempty,min=0,max=4"`
-	Status          WorkloadStatus     `json:"status,omitempty" binding:"omitempty,oneof=pending scheduled processing completed failed cancelled paused"`
+	Name                 string               `json:"name,omitempty" binding:"omitempty,min=1,max=100"`
+	Description          string               `json:"description,omitempty" binding:"omitempty,max=500"`
+	Priority             WorkloadPriority     `json:"priority,omitempty" binding:"omitempty,min=0,max=4"`
+	Status               WorkloadStatus       `json:"status,omitempty" binding:"omitempty,oneof=pending scheduled processing completed failed cancelled paused"`
 	ResourceRequirements ResourceRequirements `json:"resource_requirements,omitempty"`
-	Constraints     WorkloadConstraints `json:"constraints,omitempty"`
-	MaxRetries      int                `json:"max_retries,omitempty" binding:"omitempty,min=0,max=10"`
-	Deadline        *time.Time         `json:"deadline,omitempty"`
-	Timeout         time.Duration      `json:"timeout,omitempty"`
-	Metadata        map[string]string  `json:"metadata,omitempty"`
+	Constraints          WorkloadConstraints  `json:"constraints,omitempty"`
+	MaxRetries           int                  `json:"max_retries,omitempty" binding:"omitempty,min=0,max=10"`
+	Deadline             *time.Time           `json:"deadline,omitempty"`
+	Timeout              time.Duration        `json:"timeout,omitempty"`
+	Metadata             map[string]string    `json:"metadata,omitempty"`
 }
 
 // WorkloadResponse represents a workload in API responses
 type WorkloadResponse struct {
-	ID              uuid.UUID       `json:"id"`
-	Name            string          `json:"name"`
-	Description     string          `json:"description,omitempty"`
-	OrganizationID  uuid.UUID       `json:"organization_id"`
-	OrganizationName string         `json:"organization_name"`
-	ProjectID       uuid.UUID       `json:"project_id"`
-	ProjectName     string          `json:"project_name"`
-	UserID          uuid.UUID       `json:"user_id"`
-	Username        string          `json:"username"`
-	Type            WorkloadType    `json:"type"`
-	Priority        WorkloadPriority `json:"priority"`
-	Status          WorkloadStatus  `json:"status"`
-	ResourceType    string          `json:"resource_type"`
+	ID                   uuid.UUID            `json:"id"`
+	Name                 string               `json:"name"`
+	Description          string               `json:"description,omitempty"`
+	OrganizationID       uuid.UUID            `json:"organization_id"`
+	OrganizationName     string               `json:"organization_name"`
+	ProjectID            uuid.UUID            `json:"project_id"`
+	ProjectName          string               `json:"project_name"`
+	UserID               uuid.UUID            `json:"user_id"`
+	Username             string               `json:"username"`
+	Type                 WorkloadType         `json:"type"`
+	Priority             WorkloadPriority     `json:"priority"`
+	Status               WorkloadStatus       `json:"status"`
+	ResourceType         string               `json:"resource_type"`
 	ResourceRequirements ResourceRequirements `json:"resource_requirements"`
-	Constraints     WorkloadConstraints `json:"constraints,omitempty"`
-	Dependencies    []uuid.UUID      `json:"dependencies,omitempty"`
-	Retries         int             `json:"retries"`
-	MaxRetries      int             `json:"max_retries,omitempty"`
-	FailureReason   string          `json:"failure_reason,omitempty"`
-	CreatedAt       time.Time       `json:"created_at"`
-	ScheduledAt     *time.Time      `json:"scheduled_at,omitempty"`
-	StartedAt       *time.Time      `json:"started_at,omitempty"`
-	CompletedAt     *time.Time      `json:"completed_at,omitempty"`
-	ExecutionTime   time.Duration   `json:"execution_time,omitempty"`
-	Deadline        *time.Time      `json:"deadline,omitempty"`
-	Timeout         time.Duration   `json:"timeout,omitempty"`
-	Metadata        map[string]string `json:"metadata,omitempty"`
-	ClusterID       *uuid.UUID      `json:"cluster_id,omitempty"`
-	ClusterName     *string         `json:"cluster_name,omitempty"`
-	ResourceID      *uuid.UUID      `json:"resource_id,omitempty"`
-	ResourceName    *string         `json:"resource_name,omitempty"`
-	Cost            float64         `json:"cost,omitempty"`
-	EstimatedCost   float64         `json:"estimated_cost,omitempty"`
+	Constraints          WorkloadConstraints  `json:"constraints,omitempty"`
+	Dependencies         []uuid.UUID          `json:"dependencies,omitempty"`
+	Retries              int                  `json:"retries"`
+	MaxRetries           int                  `json:"max_retries,omitempty"`
+	FailureReason        string               `json:"failure_reason,omitempty"`
+	CreatedAt            time.Time            `json:"created_at"`
+	ScheduledAt          *time.Time           `json:"scheduled_at,omitempty"`
+	StartedAt            *time.Time           `json:"started_at,omitempty"`
+	CompletedAt          *time.Time           `json:"completed_at,omitempty"`
+	ExecutionTime        time.Duration        `json:"execution_time,omitempty"`
+	Deadline             *time.Time           `json:"deadline,omitempty"`
+	Timeout              time.Duration        `json:"timeout,omitempty"`
+	Metadata             map[string]string    `json:"metadata,omitempty"`
+	ClusterID            *uuid.UUID           `json:"cluster_id,omitempty"`
+	ClusterName          *string              `json:"cluster_name,omitempty"`
+	ResourceID           *uuid.UUID           `json:"resource_id,omitempty"`
+	ResourceName         *string              `json:"resource_name,omitempty"`
+	Cost                 float64              `json:"cost,omitempty"`
+	EstimatedCost        float64              `json:"estimated_cost,omitempty"`
 }
 
 // WorkloadListResponse represents a paginated list of workloads
 type WorkloadListResponse struct {
-	Workloads   []WorkloadResponse `json:"workloads"`
-	Total       int64             `json:"total"`
-	Page        int               `json:"page"`
-	PageSize    int               `json:"page_size"`
-	TotalPages  int               `json:"total_pages"`
+	Workloads  []WorkloadResponse `json:"workloads"`
+	Total      int64              `json:"total"`
+	Page       int                `json:"page"`
+	PageSize   int                `json:"page_size"`
+	TotalPages int                `json:"total_pages"`
 }
 
 // WorkloadFilter represents filters for listing workloads
 type WorkloadFilter struct {
-	OrganizationID uuid.UUID    `json:"organization_id,omitempty"`
-	ProjectID      uuid.UUID    `json:"project_id,omitempty"`
-	UserID         uuid.UUID    `json:"user_id,omitempty"`
-	Name           string       `json:"name,omitempty"`
-	Type           WorkloadType `json:"type,omitempty"`
+	OrganizationID uuid.UUID        `json:"organization_id,omitempty"`
+	ProjectID      uuid.UUID        `json:"project_id,omitempty"`
+	UserID         uuid.UUID        `json:"user_id,omitempty"`
+	Name           string           `json:"name,omitempty"`
+	Type           WorkloadType     `json:"type,omitempty"`
 	Priority       WorkloadPriority `json:"priority,omitempty"`
-	Status         WorkloadStatus `json:"status,omitempty"`
-	ResourceType   string       `json:"resource_type,omitempty"`
-	ClusterID      uuid.UUID    `json:"cluster_id,omitempty"`
-	StartTime      *time.Time   `json:"start_time,omitempty"`
-	EndTime        *time.Time   `json:"end_time,omitempty"`
-	Page           int          `json:"page,omitempty"`
-	Limit          int          `json:"limit,omitempty"`
+	Status         WorkloadStatus   `json:"status,omitempty"`
+	ResourceType   string           `json:"resource_type,omitempty"`
+	ClusterID      uuid.UUID        `json:"cluster_id,omitempty"`
+	StartTime      *time.Time       `json:"start_time,omitempty"`
+	EndTime        *time.Time       `json:"end_time,omitempty"`
+	Page           int              `json:"page,omitempty"`
+	Limit          int              `json:"limit,omitempty"`
 }
 
 // Validate validates the workload
@@ -237,13 +237,13 @@ func (w *Workload) Validate() error {
 
 // WorkloadMetrics represents metrics for a workload
 type WorkloadMetrics struct {
-	WorkloadID     uuid.UUID   `json:"workload_id"`
-	CPUUsage       float64     `json:"cpu_usage_percent"`
-	MemoryUsage    float64     `json:"memory_usage_percent"`
-	StorageUsage   float64     `json:"storage_usage_percent"`
-	GPUUsage       float64     `json:"gpu_usage_percent,omitempty"`
-	NetworkIn      float64     `json:"network_in_mbps"`
-	NetworkOut     float64     `json:"network_out_mbps"`
-	Status         WorkloadStatus `json:"status"`
-	LastUpdated    time.Time   `json:"last_updated"`
+	WorkloadID   uuid.UUID      `json:"workload_id"`
+	CPUUsage     float64        `json:"cpu_usage_percent"`
+	MemoryUsage  float64        `json:"memory_usage_percent"`
+	StorageUsage float64        `json:"storage_usage_percent"`
+	GPUUsage     float64        `json:"gpu_usage_percent,omitempty"`
+	NetworkIn    float64        `json:"network_in_mbps"`
+	NetworkOut   float64        `json:"network_out_mbps"`
+	Status       WorkloadStatus `json:"status"`
+	LastUpdated  time.Time      `json:"last_updated"`
 }

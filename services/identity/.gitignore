@@ -1,0 +1,46 @@
+# Dependencies
+/node_modules/
+
+# Build outputs
+/dist/
+/build/
+*.js.map
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+/logs/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Package manager locks
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Cache
+.cache/
+/.cache/
+
+# Test coverage
+/coverage/
+*.lcov
+
+# Temporary files
+*.tmp
+*.temp
+/tmp/
+/temp/
