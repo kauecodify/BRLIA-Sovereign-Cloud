@@ -1,0 +1,29 @@
+# BRLIA Control API - Configuracao Padrao
+
+server:
+  port: "8080"
+  mode: "release"
+  shutdown_timeout: 30s
+
+database:
+  host: "localhost"
+  port: 5432
+  username: "brlia"
+  password: ""
+  database: "brlia_control"
+  ssl_mode: "disable"
+  pool_size: 10
+
+redis:
+  host: "localhost"
+  port: 6379
+  password: ""
+  db: 0
+
+auth:
+  enabled: false
+  jwt_secret: "brlia-sovereign-cloud-secret"
+  jwt_expiry: 15m
+  refresh_secret: "brlia-refresh-secret"
+  refresh_expiry: 168h
+  issuer: "brlia-control-api"

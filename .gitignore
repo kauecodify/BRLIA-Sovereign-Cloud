@@ -1,0 +1,75 @@
+# Dependencies
+/go/
+/node_modules/
+/vendor/
+
+# Build outputs
+/bin/
+/out/
+/dist/
+*.exe
+*.so
+*.dll
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+/logs/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Database
+*.sqlite
+*.db
+/dump.rdb
+
+# Docker
+.docker/
+
+# Test coverage
+/coverage/
+*.lcov
+
+# Temporary files
+*.tmp
+*.temp
+/tmp/
+/temp/
+
+# Cache
+.cache/
+/.cache/
+
+# Local configuration
+config/local.yaml
+config/*.local.yaml
+*.local
+
+# Backup files
+*.bak
+*.backup
+/backups/
+
+# Certificates and keys
+*.pem
+*.key
+*.crt
+*.pfx
+*.p12
+
+# Secrets
+*.secret
+secrets/

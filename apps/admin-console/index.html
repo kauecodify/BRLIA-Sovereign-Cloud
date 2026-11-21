@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BRLIA Control - Admin Console</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <span class="logo-text">BRLIA</span>
+                </div>
+                <div class="sidebar-title">Control</div>
+            </div>
+            
+            <div class="nav-section">
+                <div class="nav-section-title">Principal</div>
+                <a href="#" class="nav-item active" data-page="dashboard">
+                    <span class="nav-icon">&#9679;</span>
+                    <span>Dashboard</span>
+                </a>
+            </div>
+            
+            <div class="nav-section">
+                <div class="nav-section-title">Gerenciamento</div>
+                <a href="#" class="nav-item" data-page="organizations">
+                    <span class="nav-icon">&#9679;</span>
+                    <span>Organizações</span>
+                </a>
+                <a href="#" class="nav-item" data-page="projects">
+                    <span class="nav-icon">&#9679;</span>
+                    <span>Projetos</span>
+                </a>
+                <a href="#" class="nav-item" data-page="users">
+                    <span class="nav-icon">&#9679;</span>
+                    <span>Usuários</span>
+                </a>
+                <a href="#" class="nav-item" data-page="roles">
+                    <span class="nav-icon">&#9679;</span>
+                    <span>Roles</span>
+                </a>
+            </div>
+            
+            <div class="nav-section">
+                <div class="nav-section-title">Infraestrutura</div>
+                <a href="#" class="nav-item" data-page="regions">
+                    <span class="nav-icon">&#9679;</span>
+                    <span>Regiões</span>
+                </a>
+                <a href="#" class="nav-item" data-page="clusters">
+                    <span class="nav-icon">&#9679;</span>
+                    <span>Clusters</span>
+                </a>
+                <a href="#" class="nav-item" data-page="resources">
+                    <span class="nav-icon">&#9679;</span>
+                    <span>Recursos</span>
+                </a>
+            </div>
+            
+            <div class="nav-section">
+                <div class="nav-section-title">Waterfall</div>
+                <a href="#" class="nav-item" data-page="waterfall">
+                    <span class="nav-icon">&#9679;</span>
+                    <span>Orquestração</span>
+                </a>
+                <a href="#" class="nav-item" data-page="workloads">
+                    <span class="nav-icon">&#9679;</span>
+                    <span>Workloads</span>
+                </a>
+                <a href="#" class="nav-item" data-page="queues">
+                    <span class="nav-icon">&#9679;</span>
+                    <span>Filas</span>
+                </a>
+            </div>
+            
+            <div class="nav-section">
+                <div class="nav-section-title">Segurança</div>
+                <a href="#" class="nav-item" data-page="audit">
+                    <span class="nav-icon">&#9679;</span>
+                    <span>Auditoria</span>
+                </a>
+                <a href="#" class="nav-item" data-page="quotas">
+                    <span class="nav-icon">&#9679;</span>
+                    <span>Quotas</span>
+                </a>
+            </div>
+            
+            <div class="nav-section">
+                <div class="nav-section-title">Sistema</div>
+                <a href="#" class="nav-item" data-page="settings">
+                    <span class="nav-icon">&#9679;</span>
+                    <span>Configurações</span>
+                </a>
+            </div>
+        </nav>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button class="menu-toggle" id="menuToggle">
+                        <span class="menu-icon">&#9776;</span>
+                    </button>
+                    <div class="breadcrumb">
+                        <span class="breadcrumb-item">BRLIA Control</span>
+                        <span class="breadcrumb-separator">/</span>
+                        <span class="breadcrumb-item active" id="currentPage">Dashboard</span>
+                    </div>
+                </div>
+                <div class="topbar-right">
+                    <div class="user-menu">
+                        <button class="user-button" id="userButton">
+                            <span class="user-avatar">A</span>
+                            <span class="user-name">Admin</span>
+                            <span class="user-chevon">&#9662;</span>
+                        </button>
+                        <div class="user-dropdown" id="userDropdown">
+                            <a href="#" class="dropdown-item">Perfil</a>
+                            <a href="#" class="dropdown-item">Configurações</a>
+                            <a href="#" class="dropdown-item">Sair</a>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            
+            <div class="content">
+                <!-- Dashboard Page -->
+                <div class="page active" id="page-dashboard">
+                    <div class="page-header">
+                        <h1>Dashboard</h1>
+                        <p>Visão geral do sistema BRLIA Control</p>
+                    </div>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <span class="stat-title">Organizações</span>
+                            </div>
+                            <div class="stat-value" id="orgCount">0</div>
+                            <div class="stat-change">+0%</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <span class="stat-title">Projetos</span>
+                            </div>
+                            <div class="stat-value" id="projectCount">0</div>
+                            <div class="stat-change">+0%</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <span class="stat-title">Usuários</span>
+                            </div>
+                            <div class="stat-value" id="userCount">0</div>
+                            <div class="stat-change">+0%</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <span class="stat-title">Clusters</span>
+                            </div>
+                            <div class="stat-value" id="clusterCount">0</div>
+                            <div class="stat-change">+0%</div>
+                        </div>
+                    </div>
+                    
+                    <div class="dashboard-grid">
+                        <div class="chart-card">
+                            <div class="card-header">
+                                <h3>Status do Sistema</h3>
+                            </div>
+                            <div class="status-indicators">
+                                <div class="status-item">
+                                    <span class="status-dot healthy"></span>
+                                    <span>Control API</span>
+                                    <span class="status-text">Operacional</span>
+                                </div>
+                                <div class="status-item">
+                                    <span class="status-dot healthy"></span>
+                                    <span>Waterfall</span>
+                                    <span class="status-text">Operacional</span>
+                                </div>
+                                <div class="status-item">
+                                    <span class="status-dot healthy"></span>
+                                    <span>Database</span>
+                                    <span class="status-text">Operacional</span>
+                                </div>
+                                <div class="status-item">
+                                    <span class="status-dot healthy"></span>
+                                    <span>Redis</span>
+                                    <span class="status-text">Operacional</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="chart-card">
+                            <div class="card-header">
+                                <h3>Recursos Alocados</h3>
+                            </div>
+                            <div class="resource-progress">
+                                <div class="progress-item">
+                                    <span class="progress-label">CPU</span>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill cpu" style="width: 25%"></div>
+                                    </div>
+                                    <span class="progress-value">25%</span>
+                                </div>
+                                <div class="progress-item">
+                                    <span class="progress-label">Memória</span>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill memory" style="width: 35%"></div>
+                                    </div>
+                                    <span class="progress-value">35%</span>
+                                </div>
+                                <div class="progress-item">
+                                    <span class="progress-label">Armazenamento</span>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill storage" style="width: 45%"></div>
+                                    </div>
+                                    <span class="progress-value">45%</span>
+                                </div>
+                                <div class="progress-item">
+                                    <span class="progress-label">GPU</span>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill gpu" style="width: 10%"></div>
+                                    </div>
+                                    <span class="progress-value">10%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="dashboard-grid">
+                        <div class="chart-card large">
+                            <div class="card-header">
+                                <h3>Workloads Recentes</h3>
+                                <button class="btn btn-small btn-secondary">Ver Todos</button>
+                            </div>
+                            <div class="table-container">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Nome</th>
+                                            <th>Tipo</th>
+                                            <th>Status</th>
+                                            <th>Prioridade</th>
+                                            <th>Tempo</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="recentWorkloads">
+                                        <tr>
+                                            <td>#BRL-001</td>
+                                            <td>Processamento de Dados</td>
+                                            <td>Batch</td>
+                                            <td><span class="status-badge completed">Concluído</span></td>
+                                            <td>Normal</td>
+                                            <td>2m 30s</td>
+                                        </tr>
+                                        <tr>
+                                            <td>#BRL-002</td>
+                                            <td>Treinamento IA</td>
+                                            <td>GPU</td>
+                                            <td><span class="status-badge processing">Processando</span></td>
+                                            <td>Alta</td>
+                                            <td>15m 22s</td>
+                                        </tr>
+                                        <tr>
+                                            <td>#BRL-003</td>
+                                            <td>Backup Diário</td>
+                                            <td>Storage</td>
+                                            <td><span class="status-badge pending">Pendente</span></td>
+                                            <td>Baixa</td>
+                                            <td>-</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Organizations Page -->
+                <div class="page" id="page-organizations">
+                    <div class="page-header">
+                        <h1>Organizações</h1>
+                        <p>Gerenciamento de organizações do sistema</p>
+                    </div>
+                    
+                    <div class="toolbar">
+                        <div class="toolbar-left">
+                            <div class="search-box">
+                                <input type="text" placeholder="Buscar organizações..." id="orgSearch">
+                                <button class="search-btn">Buscar</button>
+                            </div>
+                        </div>
+                        <div class="toolbar-right">
+                            <button class="btn btn-primary" id="createOrgBtn">
+                                <span>+</span> Nova Organização
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nome</th>
+                                    <th>Descrição</th>
+                                    <th>Status</th>
+                                    <th>Projetos</th>
+                                    <th>Usuários</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="orgTableBody">
+                                <tr>
+                                    <td>ORG-001</td>
+                                    <td>Governo Federal</td>
+                                    <td>Ministério da Economia</td>
+                                    <td><span class="status-badge active">Ativo</span></td>
+                                    <td>12</td>
+                                    <td>45</td>
+                                    <td>
+                                        <button class="action-btn view" title="Visualizar"></button>
+                                        <button class="action-btn edit" title="Editar"></button>
+                                        <button class="action-btn delete" title="Excluir"></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Projects Page -->
+                <div class="page" id="page-projects">
+                    <div class="page-header">
+                        <h1>Projetos</h1>
+                        <p>Gerenciamento de projetos</p>
+                    </div>
+                    
+                    <div class="toolbar">
+                        <div class="toolbar-left">
+                            <div class="search-box">
+                                <input type="text" placeholder="Buscar projetos..." id="projectSearch">
+                                <button class="search-btn">Buscar</button>
+                            </div>
+                            <select class="filter-select" id="projectOrgFilter">
+                                <option value="">Todas as Organizações</option>
+                            </select>
+                            <select class="filter-select" id="projectStatusFilter">
+                                <option value="">Todos os Status</option>
+                                <option value="active">Ativo</option>
+                                <option value="inactive">Inativo</option>
+                                <option value="pending">Pendente</option>
+                            </select>
+                        </div>
+                        <div class="toolbar-right">
+                            <button class="btn btn-primary" id="createProjectBtn">
+                                <span>+</span> Novo Projeto
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nome</th>
+                                    <th>Organização</th>
+                                    <th>Região</th>
+                                    <th>Status</th>
+                                    <th>Recursos</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="projectTableBody">
+                                <tr>
+                                    <td>PRJ-001</td>
+                                    <td>Portal de Serviços</td>
+                                    <td>Governo Federal</td>
+                                    <td>BR-SP-1</td>
+                                    <td><span class="status-badge active">Ativo</span></td>
+                                    <td>25</td>
+                                    <td>
+                                        <button class="action-btn view" title="Visualizar"></button>
+                                        <button class="action-btn edit" title="Editar"></button>
+                                        <button class="action-btn delete" title="Excluir"></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Users Page -->
+                <div class="page" id="page-users">
+                    <div class="page-header">
+                        <h1>Usuários</h1>
+                        <p>Gerenciamento de usuários do sistema</p>
+                    </div>
+                    
+                    <div class="toolbar">
+                        <div class="toolbar-left">
+                            <div class="search-box">
+                                <input type="text" placeholder="Buscar usuários..." id="userSearch">
+                                <button class="search-btn">Buscar</button>
+                            </div>
+                            <select class="filter-select" id="userOrgFilter">
+                                <option value="">Todas as Organizações</option>
+                            </select>
+                            <select class="filter-select" id="userStatusFilter">
+                                <option value="">Todos os Status</option>
+                                <option value="active">Ativo</option>
+                                <option value="inactive">Inativo</option>
+                                <option value="pending">Pendente</option>
+                            </select>
+                        </div>
+                        <div class="toolbar-right">
+                            <button class="btn btn-primary" id="createUserBtn">
+                                <span>+</span> Novo Usuário
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nome</th>
+                                    <th>Usuário</th>
+                                    <th>E-mail</th>
+                                    <th>Organização</th>
+                                    <th>Status</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="userTableBody">
+                                <tr>
+                                    <td>USR-001</td>
+                                    <td>João Silva</td>
+                                    <td>joao.silva</td>
+                                    <td>joao@gov.br</td>
+                                    <td>Governo Federal</td>
+                                    <td><span class="status-badge active">Ativo</span></td>
+                                    <td>
+                                        <button class="action-btn view" title="Visualizar"></button>
+                                        <button class="action-btn edit" title="Editar"></button>
+                                        <button class="action-btn delete" title="Excluir"></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Roles Page -->
+                <div class="page" id="page-roles">
+                    <div class="page-header">
+                        <h1>Roles</h1>
+                        <p>Gerenciamento de permissões</p>
+                    </div>
+                    
+                    <div class="toolbar">
+                        <div class="toolbar-left">
+                            <div class="search-box">
+                                <input type="text" placeholder="Buscar roles..." id="roleSearch">
+                                <button class="search-btn">Buscar</button>
+                            </div>
+                        </div>
+                        <div class="toolbar-right">
+                            <button class="btn btn-primary" id="createRoleBtn">
+                                <span>+</span> Nova Role
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nome</th>
+                                    <th>Descrição</th>
+                                    <th>Permissões</th>
+                                    <th>Sistema</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="roleTableBody">
+                                <tr>
+                                    <td>ROL-001</td>
+                                    <td>Super Admin</td>
+                                    <td>Acesso total ao sistema</td>
+                                    <td>Todas</td>
+                                    <td><span class="status-badge active">Sim</span></td>
+                                    <td>
+                                        <button class="action-btn view" title="Visualizar"></button>
+                                        <button class="action-btn edit" title="Editar"></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Regions Page -->
+                <div class="page" id="page-regions">
+                    <div class="page-header">
+                        <h1>Regiões</h1>
+                        <p>Gerenciamento de regiões e zonas de disponibilidade</p>
+                    </div>
+                    
+                    <div class="toolbar">
+                        <div class="toolbar-right">
+                            <button class="btn btn-primary" id="createRegionBtn">
+                                <span>+</span> Nova Região
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nome</th>
+                                    <th>Localização</th>
+                                    <th>País</th>
+                                    <th>Status</th>
+                                    <th>Zonas</th>
+                                    <th>Clusters</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="regionTableBody">
+                                <tr>
+                                    <td>REG-001</td>
+                                    <td>BR-SP-1</td>
+                                    <td>São Paulo</td>
+                                    <td>Brasil</td>
+                                    <td><span class="status-badge active">Ativo</span></td>
+                                    <td>3</td>
+                                    <td>5</td>
+                                    <td>
+                                        <button class="action-btn view" title="Visualizar"></button>
+                                        <button class="action-btn edit" title="Editar"></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Waterfall Page -->
+                <div class="page" id="page-waterfall">
+                    <div class="page-header">
+                        <h1>BRLIA Waterfall</h1>
+                        <p>Motor de Orquestração Inteligente</p>
+                    </div>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <span class="stat-title">Workloads Ativos</span>
+                            </div>
+                            <div class="stat-value" id="waterfallActive">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <span class="stat-title">Workloads Pendentes</span>
+                            </div>
+                            <div class="stat-value" id="waterfallPending">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <span class="stat-title">Workloads Concluídos</span>
+                            </div>
+                            <div class="stat-value" id="waterfallCompleted">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <span class="stat-title">Tempo Médio</span>
+                            </div>
+                            <div class="stat-value" id="waterfallAvgTime">0ms</div>
+                        </div>
+                    </div>
+                    
+                    <div class="dashboard-grid">
+                        <div class="chart-card">
+                            <div class="card-header">
+                                <h3>Status do Engine</h3>
+                            </div>
+                            <div class="engine-status">
+                                <div class="status-row">
+                                    <span class="status-label">Status:</span>
+                                    <span class="status-value" id="engineStatus">Operacional</span>
+                                </div>
+                                <div class="status-row">
+                                    <span class="status-label">Workers:</span>
+                                    <span class="status-value" id="engineWorkers">10</span>
+                                </div>
+                                <div class="status-row">
+                                    <span class="status-label">Último Heartbeat:</span>
+                                    <span class="status-value" id="engineHeartbeat">Há 1 segundo</span>
+                                </div>
+                                <div class="status-row">
+                                    <span class="status-label">Inicializado:</span>
+                                    <span class="status-value" id="engineStarted">2026-11-21 10:00:00</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="chart-card">
+                            <div class="card-header">
+                                <h3>Filas de Workloads</h3>
+                            </div>
+                            <div class="queue-status">
+                                <div class="queue-item">
+                                    <span class="queue-name">Normal</span>
+                                    <div class="queue-bar">
+                                        <div class="queue-fill" style="width: 40%"></div>
+                                    </div>
+                                    <span class="queue-count">40%</span>
+                                </div>
+                                <div class="queue-item">
+                                    <span class="queue-name">Prioridade</span>
+                                    <div class="queue-bar">
+                                        <div class="queue-fill" style="width: 20%"></div>
+                                    </div>
+                                    <span class="queue-count">20%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="dashboard-grid">
+                        <div class="chart-card large">
+                            <div class="card-header">
+                                <h3>Workloads Recentes</h3>
+                                <button class="btn btn-small btn-secondary">Ver Todos</button>
+                            </div>
+                            <div class="table-container">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Nome</th>
+                                            <th>Tipo</th>
+                                            <th>Status</th>
+                                            <th>Prioridade</th>
+                                            <th>Recurso</th>
+                                            <th>Tempo</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="waterfallWorkloads">
+                                        <tr>
+                                            <td>#WFL-001</td>
+                                            <td>Processamento Batch</td>
+                                            <td>Batch</td>
+                                            <td><span class="status-badge completed">Concluído</span></td>
+                                            <td>Normal</td>
+                                            <td>Cluster-1</td>
+                                            <td>5m 20s</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Settings Page -->
+                <div class="page" id="page-settings">
+                    <div class="page-header">
+                        <h1>Configurações do Sistema</h1>
+                        <p>Configurações globais do BRLIA Control</p>
+                    </div>
+                    
+                    <div class="settings-grid">
+                        <div class="settings-card">
+                            <div class="card-header">
+                                <h3>API Configuration</h3>
+                            </div>
+                            <div class="settings-form">
+                                <div class="form-group">
+                                    <label>Host</label>
+                                    <input type="text" value="localhost" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label>Porta</label>
+                                    <input type="text" value="8080" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label>Modo</label>
+                                    <input type="text" value="release" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="settings-card">
+                            <div class="card-header">
+                                <h3>Database Configuration</h3>
+                            </div>
+                            <div class="settings-form">
+                                <div class="form-group">
+                                    <label>Host</label>
+                                    <input type="text" value="localhost" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label>Porta</label>
+                                    <input type="text" value="5432" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label>Banco de Dados</label>
+                                    <input type="text" value="brlia_control" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="settings-card">
+                            <div class="card-header">
+                                <h3>Redis Configuration</h3>
+                            </div>
+                            <div class="settings-form">
+                                <div class="form-group">
+                                    <label>Host</label>
+                                    <input type="text" value="localhost" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label>Porta</label>
+                                    <input type="text" value="6379" readonly>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-grid">
+                        <div class="settings-card large">
+                            <div class="card-header">
+                                <h3>System Health</h3>
+                            </div>
+                            <div class="health-checks">
+                                <div class="health-item">
+                                    <span class="health-name">Control API</span>
+                                    <span class="health-status healthy">Healthy</span>
+                                    <span class="health-time">1s ago</span>
+                                </div>
+                                <div class="health-item">
+                                    <span class="health-name">Waterfall Engine</span>
+                                    <span class="health-status healthy">Healthy</span>
+                                    <span class="health-time">1s ago</span>
+                                </div>
+                                <div class="health-item">
+                                    <span class="health-name">PostgreSQL</span>
+                                    <span class="health-status healthy">Healthy</span>
+                                    <span class="health-time">2s ago</span>
+                                </div>
+                                <div class="health-item">
+                                    <span class="health-name">Redis</span>
+                                    <span class="health-status healthy">Healthy</span>
+                                    <span class="health-time">2s ago</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="app.js"></script>
+</body>
+</html>

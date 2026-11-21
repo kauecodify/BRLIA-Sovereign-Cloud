@@ -1,0 +1,41 @@
+# BRLIA Waterfall Engine - Configuracao Padrao
+
+server:
+  port: "8081"
+  mode: "release"
+  shutdown_timeout: 30s
+
+database:
+  host: "localhost"
+  port: 5432
+  username: "brlia"
+  password: ""
+  database: "brlia_waterfall"
+  ssl_mode: "disable"
+  pool_size: 10
+
+redis:
+  host: "localhost"
+  port: 6379
+  password: ""
+  db: 1
+
+auth:
+  enabled: false
+  jwt_secret: "brlia-waterfall-secret"
+  jwt_expiry: 15m
+  refresh_secret: "brlia-waterfall-refresh-secret"
+  refresh_expiry: 168h
+  issuer: "brlia-waterfall-api"
+
+waterfall:
+  worker_count: 10
+  queue_worker_count: 5
+  scheduler_interval: 1s
+  capacity_check_interval: 5s
+  failure_check_interval: 10s
+  cost_optimizer_interval: 30s
+  max_retries: 3
+  retry_delay: 1s
+  enable_ai: false
+  ai_check_interval: 1m

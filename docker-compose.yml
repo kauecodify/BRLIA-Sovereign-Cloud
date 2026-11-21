@@ -1,0 +1,285 @@
+# BRLIA Sovereign Cloud - Docker Compose para Desenvolvimento
+# Este arquivo permite executar a plataforma localmente para desenvolvimento
+
+version: '3.8'
+
+services:
+  # PostgreSQL - Banco de dados principal
+  postgres:
+    image: postgres:15-alpine
+    container_name: brlia-postgres
+    environment:
+      POSTGRES_USER: brlia
+      POSTGRES_PASSWORD: brlia-dev
+      POSTGRES_DB: brlia_control
+      POSTGRES_INITDB_ARGS: --encoding=UTF8 --data-checksums
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/migrations:/docker-entrypoint-initdb.d
+    ports:
+      - "5432:5432"
+    networks:
+      - brlia-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U brlia -d brlia_control"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # Redis - Cache e filas
+  redis:
+    image: redis:7-alpine
+    container_name: brlia-redis
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    networks:
+      - brlia-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # NATS - Message Broker
+  nats:
+    image: nats:2.9-alpine
+    container_name: brlia-nats
+    command: --jetstream --store_dir /data --max_payload 16MB
+    volumes:
+      - nats_data:/data
+    ports:
+      - "4222:4222"
+      - "8222:8222"
+    networks:
+      - brlia-network
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8222"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # Control API - BRLIA Control Plane
+  control-api:
+    build:
+      context: ./services/control-api
+      dockerfile: Dockerfile
+    container_name: brlia-control-api
+    environment:
+      SERVER_PORT: 8080
+      SERVER_MODE: debug
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USERNAME: brlia
+      DB_PASSWORD: brlia-dev
+      DB_NAME: brlia_control
+      DB_SSL_MODE: disable
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ""
+      REDIS_DB: 0
+      AUTH_ENABLED: "false"
+      JWT_SECRET: brlia-dev-secret
+      JWT_EXPIRY: 15m
+      JWT_ISSUER: brlia-control-api
+    ports:
+      - "8080:8080"
+    networks:
+      - brlia-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    volumes:
+      - ./services/control-api/config:/etc/brlia:ro
+
+  # Waterfall Engine - Motor de Orquestracao
+  waterfall:
+    build:
+      context: ./services/waterfall
+      dockerfile: Dockerfile
+    container_name: brlia-waterfall
+    environment:
+      SERVER_PORT: 8081
+      SERVER_MODE: debug
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USERNAME: brlia
+      DB_PASSWORD: brlia-dev
+      DB_NAME: brlia_waterfall
+      DB_SSL_MODE: disable
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ""
+      REDIS_DB: 1
+      AUTH_ENABLED: "false"
+      JWT_SECRET: brlia-dev-secret
+      JWT_EXPIRY: 15m
+      JWT_ISSUER: brlia-waterfall-api
+      WORKER_COUNT: 10
+      QUEUE_WORKER_COUNT: 5
+      ENABLE_AI: "false"
+    ports:
+      - "8081:8081"
+    networks:
+      - brlia-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      control-api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8081/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    volumes:
+      - ./services/waterfall/config:/etc/brlia:ro
+
+  # Admin Console - Interface Web
+  admin-console:
+    image: nginx:alpine
+    container_name: brlia-admin-console
+    volumes:
+      - ./apps/admin-console:/usr/share/nginx/html:ro
+      - ./infra/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - "3001:80"
+    networks:
+      - brlia-network
+    depends_on:
+      control-api:
+        condition: service_healthy
+      waterfall:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # Prometheus - Monitoramento
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: brlia-prometheus
+    volumes:
+      - prometheus_data:/prometheus
+      - ./infra/monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9090:9090"
+    networks:
+      - brlia-network
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:9090"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # Grafana - Visualizacao
+  grafana:
+    image: grafana/grafana:latest
+    container_name: brlia-grafana
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: brlia-admin
+      GF_SERVER_HTTP_PORT: 3000
+      GF_DATABASE_TYPE: postgres
+      GF_DATABASE_HOST: postgres
+      GF_DATABASE_NAME: grafana
+      GF_DATABASE_USER: brlia
+      GF_DATABASE_PASSWORD: brlia-dev
+    volumes:
+      - grafana_data:/var/lib/grafana
+    ports:
+      - "3000:3000"
+    networks:
+      - brlia-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3000"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # Keycloak - Identidade e Acesso (Opcional)
+  keycloak:
+    image: quay.io/keycloak/keycloak:22.0.0
+    container_name: brlia-keycloak
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: brlia-admin
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak
+      KC_DB_USERNAME: brlia
+      KC_DB_PASSWORD: brlia-dev
+      KC_HOSTNAME: localhost
+      KC_HTTP_PORT: 8082
+      KC_HTTPS_PORT: 8445
+    ports:
+      - "8082:8082"
+      - "8445:8445"
+    networks:
+      - brlia-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: ["start-dev"]
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8082"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # Vault - Gerenciamento de Segredos (Opcional)
+  vault:
+    image: vault:1.15.0
+    container_name: brlia-vault
+    environment:
+      VAULT_DEV_ROOT_TOKEN_ID: brlia-dev-token
+      VAULT_DEV_LISTEN_ADDRESS: 0.0.0.0:8200
+    ports:
+      - "8200:8200"
+    networks:
+      - brlia-network
+    cap_add:
+      - IPC_LOCK
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8200"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+networks:
+  brlia-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+volumes:
+  postgres_data:
+  redis_data:
+  nats_data:
+  prometheus_data:
+  grafana_data:
