@@ -105,7 +105,7 @@ Consulte o [Manual Tecnico de Instalacao Nacional](docs/installation/NATIONAL_IN
 
 ## Contribuindo
 
-Este e um projeto de infraestrutura critica nacional. Todas as contribuicoes sao bem-vindas, desde que sigam os padroes de seguranca, auditabilidade e soberania tecnologica.
+Este e um projeto de infraestrutura critica nacional.
 
 ## Licenca
 
