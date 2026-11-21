@@ -1,0 +1,7 @@
+# BRLIA BRLIA Security - Configuracao Padrao
+# Gerenciamento de segredos, certificados e integracao com Vault e HSM
+
+server:
+  port: "8087"
+  mode: "release"
+  shutdown_timeout: 30s

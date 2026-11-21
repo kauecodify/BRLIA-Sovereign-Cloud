@@ -8,13 +8,13 @@ import (
 
 // Role represents a set of permissions
 type Role struct {
-	ID          uuid.UUID `json:"id" db:"id"`
-	Name        string    `json:"name" db:"name"`
-	Description string    `json:"description,omitempty" db:"description"`
-	Permissions []string `json:"permissions" db:"permissions"`
-	IsSystem    bool      `json:"is_system" db:"is_system"`
-	CreatedAt   time.Time `json:"created_at" db:"created_at"`
-	UpdatedAt   time.Time `json:"updated_at" db:"updated_at"`
+	ID          uuid.UUID  `json:"id" db:"id"`
+	Name        string     `json:"name" db:"name"`
+	Description string     `json:"description,omitempty" db:"description"`
+	Permissions []string   `json:"permissions" db:"permissions"`
+	IsSystem    bool       `json:"is_system" db:"is_system"`
+	CreatedAt   time.Time  `json:"created_at" db:"created_at"`
+	UpdatedAt   time.Time  `json:"updated_at" db:"updated_at"`
 	DeletedAt   *time.Time `json:"deleted_at,omitempty" db:"deleted_at"`
 }
 
@@ -37,7 +37,7 @@ type RoleResponse struct {
 	ID          uuid.UUID `json:"id"`
 	Name        string    `json:"name"`
 	Description string    `json:"description,omitempty"`
-	Permissions []string `json:"permissions"`
+	Permissions []string  `json:"permissions"`
 	IsSystem    bool      `json:"is_system"`
 	CreatedAt   time.Time `json:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at"`
@@ -46,11 +46,11 @@ type RoleResponse struct {
 
 // RoleListResponse represents a paginated list of roles
 type RoleListResponse struct {
-	Roles     []RoleResponse `json:"roles"`
-	Total     int64         `json:"total"`
-	Page      int           `json:"page"`
-	PageSize  int           `json:"page_size"`
-	TotalPages int          `json:"total_pages"`
+	Roles      []RoleResponse `json:"roles"`
+	Total      int64          `json:"total"`
+	Page       int            `json:"page"`
+	PageSize   int            `json:"page_size"`
+	TotalPages int            `json:"total_pages"`
 }
 
 // RoleFilter represents filters for listing roles
@@ -95,8 +95,8 @@ const (
 // System roles
 const (
 	RoleSuperAdmin = "super-admin"
-	RoleAdmin       = "admin"
-	RoleEditor      = "editor"
-	RoleViewer      = "viewer"
-	RoleUser        = "user"
+	RoleAdmin      = "admin"
+	RoleEditor     = "editor"
+	RoleViewer     = "viewer"
+	RoleUser       = "user"
 )

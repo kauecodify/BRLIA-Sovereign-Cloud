@@ -12,9 +12,9 @@ import (
 func HealthCheckHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
-			"status":     "healthy",
-			"service":    "brlia-control-api",
-			"timestamp":  c.GetTime("timestamp"),
+			"status":    "healthy",
+			"service":   "brlia-control-api",
+			"timestamp": c.GetTime("timestamp"),
 		})
 	}
 }

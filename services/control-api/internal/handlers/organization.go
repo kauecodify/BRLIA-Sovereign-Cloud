@@ -4,10 +4,10 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 	"github.com/brlia/control-api/internal/models"
 	"github.com/brlia/control-api/internal/service"
+	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 // ListOrganizationsHandler lists all organizations
@@ -30,7 +30,7 @@ func ListOrganizationsHandler(svc *service.OrganizationService) gin.HandlerFunc 
 		organizations, total, err := svc.List(c.Request.Context(), filter)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{
-				"error": "Failed to list organizations",
+				"error":   "Failed to list organizations",
 				"details": err.Error(),
 			})
 			return
@@ -50,13 +50,13 @@ func ListOrganizationsHandler(svc *service.OrganizationService) gin.HandlerFunc 
 			userCount, _ := svc.CountUsers(c.Request.Context(), org.ID)
 
 			response.Organizations = append(response.Organizations, models.OrganizationResponse{
-				ID:          org.ID,
-				Name:        org.Name,
-				Description: org.Description,
-				Status:      org.Status,
-				CreatedAt:   org.CreatedAt,
-				UpdatedAt:   org.UpdatedAt,
-				Metadata:    org.Metadata,
+				ID:           org.ID,
+				Name:         org.Name,
+				Description:  org.Description,
+				Status:       org.Status,
+				CreatedAt:    org.CreatedAt,
+				UpdatedAt:    org.UpdatedAt,
+				Metadata:     org.Metadata,
 				ProjectCount: projectCount,
 				UserCount:    userCount,
 			})
@@ -72,7 +72,7 @@ func CreateOrganizationHandler(svc *service.OrganizationService) gin.HandlerFunc
 		var req models.OrganizationCreateRequest
 		if err := c.ShouldBindJSON(&req); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
-				"error": "Invalid request body",
+				"error":   "Invalid request body",
 				"details": err.Error(),
 			})
 			return
@@ -89,7 +89,7 @@ func CreateOrganizationHandler(svc *service.OrganizationService) gin.HandlerFunc
 
 		if err := svc.Create(c.Request.Context(), org); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{
-				"error": "Failed to create organization",
+				"error":   "Failed to create organization",
 				"details": err.Error(),
 			})
 			return
@@ -117,7 +117,7 @@ func GetOrganizationHandler(svc *service.OrganizationService) gin.HandlerFunc {
 		id, err := uuid.Parse(idStr)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
-				"error": "Invalid organization ID",
+				"error":   "Invalid organization ID",
 				"details": err.Error(),
 			})
 			return
@@ -138,13 +138,13 @@ func GetOrganizationHandler(svc *service.OrganizationService) gin.HandlerFunc {
 
 		// Build response
 		response := models.OrganizationResponse{
-			ID:          org.ID,
-			Name:        org.Name,
-			Description: org.Description,
-			Status:      org.Status,
-			CreatedAt:   org.CreatedAt,
-			UpdatedAt:   org.UpdatedAt,
-			Metadata:    org.Metadata,
+			ID:           org.ID,
+			Name:         org.Name,
+			Description:  org.Description,
+			Status:       org.Status,
+			CreatedAt:    org.CreatedAt,
+			UpdatedAt:    org.UpdatedAt,
+			Metadata:     org.Metadata,
 			ProjectCount: projectCount,
 			UserCount:    userCount,
 		}
@@ -160,7 +160,7 @@ func UpdateOrganizationHandler(svc *service.OrganizationService) gin.HandlerFunc
 		id, err := uuid.Parse(idStr)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
-				"error": "Invalid organization ID",
+				"error":   "Invalid organization ID",
 				"details": err.Error(),
 			})
 			return
@@ -169,7 +169,7 @@ func UpdateOrganizationHandler(svc *service.OrganizationService) gin.HandlerFunc
 		var req models.OrganizationUpdateRequest
 		if err := c.ShouldBindJSON(&req); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
-				"error": "Invalid request body",
+				"error":   "Invalid request body",
 				"details": err.Error(),
 			})
 			return
@@ -200,7 +200,7 @@ func UpdateOrganizationHandler(svc *service.OrganizationService) gin.HandlerFunc
 
 		if err := svc.Update(c.Request.Context(), org); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{
-				"error": "Failed to update organization",
+				"error":   "Failed to update organization",
 				"details": err.Error(),
 			})
 			return
@@ -212,13 +212,13 @@ func UpdateOrganizationHandler(svc *service.OrganizationService) gin.HandlerFunc
 
 		// Build response
 		response := models.OrganizationResponse{
-			ID:          org.ID,
-			Name:        org.Name,
-			Description: org.Description,
-			Status:      org.Status,
-			CreatedAt:   org.CreatedAt,
-			UpdatedAt:   org.UpdatedAt,
-			Metadata:    org.Metadata,
+			ID:           org.ID,
+			Name:         org.Name,
+			Description:  org.Description,
+			Status:       org.Status,
+			CreatedAt:    org.CreatedAt,
+			UpdatedAt:    org.UpdatedAt,
+			Metadata:     org.Metadata,
 			ProjectCount: projectCount,
 			UserCount:    userCount,
 		}
@@ -234,7 +234,7 @@ func DeleteOrganizationHandler(svc *service.OrganizationService) gin.HandlerFunc
 		id, err := uuid.Parse(idStr)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
-				"error": "Invalid organization ID",
+				"error":   "Invalid organization ID",
 				"details": err.Error(),
 			})
 			return
@@ -243,7 +243,7 @@ func DeleteOrganizationHandler(svc *service.OrganizationService) gin.HandlerFunc
 		// Delete organization
 		if err := svc.Delete(c.Request.Context(), id); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{
-				"error": "Failed to delete organization",
+				"error":   "Failed to delete organization",
 				"details": err.Error(),
 			})
 			return

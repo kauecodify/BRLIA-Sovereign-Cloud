@@ -1,0 +1,25 @@
+---
+- name: Configurar nos da nuvem soberana BRLIA
+  hosts: brlia_nodes
+  become: true
+  gather_facts: true
+
+  roles:
+    - role: common
+      # clima, pacotes base, usuarios de servico
+
+  tasks:
+    - name: Garantir pacotes base
+      ansible.builtin.apt:
+        name:
+          - containerd
+          - chrony
+          - python3-pip
+        state: present
+      when: ansible_os_family == 'Debian'
+
+    - name: Sincronizar horario (exigencia de auditoria)
+      ansible.builtin.systemd:
+        name: chrony
+        state: started
+        enabled: true

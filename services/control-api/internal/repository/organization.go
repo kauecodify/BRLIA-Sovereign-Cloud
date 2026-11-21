@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/brlia/control-api/internal/models"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/brlia/control-api/internal/models"
 )
 
 // OrganizationRepository handles database operations for organizations
@@ -126,7 +126,7 @@ func (r *OrganizationRepository) List(ctx context.Context, filter *models.Organi
 	// Count total
 	countQuery := "SELECT COUNT(*) FROM organizations WHERE deleted_at IS NULL"
 	if len(args) > 0 {
-		countQuery += fmt.Sprintf(" AND ("+query[len("SELECT ")+7:])
+		countQuery += " AND (" + query[len("SELECT ")+7:]
 	}
 
 	var total int64

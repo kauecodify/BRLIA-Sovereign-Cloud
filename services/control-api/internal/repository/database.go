@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/brlia/control-api/internal/config"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 // NewPostgresDB creates a new PostgreSQL connection pool
@@ -28,8 +28,8 @@ func NewPostgresDB(cfg config.DatabaseConfig) (*pgxpool.Pool, error) {
 
 	// Configure connection health check
 	config.HealthCheckPeriod = 0 // Disable automatic health checks
-	config.MaxConnLifetime = 0  // No lifetime limit
-	config.MaxConnIdleTime = 0  // No idle timeout
+	config.MaxConnLifetime = 0   // No lifetime limit
+	config.MaxConnIdleTime = 0   // No idle timeout
 
 	// Create connection pool
 	pool, err := pgxpool.NewWithConfig(context.Background(), config)

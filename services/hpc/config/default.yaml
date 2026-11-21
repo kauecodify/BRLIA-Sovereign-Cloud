@@ -1,0 +1,7 @@
+# BRLIA BRLIA HPC - Configuracao Padrao
+# Computacao de alto desempenho com filas SLURM e clusters dedicados
+
+server:
+  port: "8091"
+  mode: "release"
+  shutdown_timeout: 30s

@@ -1,17 +1,16 @@
 package engine
 
 import (
-	"context"
 	"fmt"
 	"log"
 	"sync"
 	"time"
 
+	"github.com/brlia/waterfall/internal/config"
+	"github.com/brlia/waterfall/internal/models"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/redis/go-redis/v9"
-	"github.com/brlia/waterfall/internal/config"
-	"github.com/brlia/waterfall/internal/models"
 )
 
 // WaterfallEngine is the main orchestration engine
@@ -42,50 +41,50 @@ type WaterfallEngine struct {
 
 // EngineStatus represents the current status of the engine
 type EngineStatus struct {
-	Status          string                 `json:"status"`
-	StartedAt       time.Time              `json:"started_at"`
-	LastHeartbeat  time.Time              `json:"last_heartbeat"`
-	WorkerCount     int                    `json:"worker_count"`
-	ActiveWorkloads int                    `json:"active_workloads"`
-	PendingWorkloads int                   `json:"pending_workloads"`
-	Clusters        []ClusterStatus        `json:"clusters"`
-	Resources       ResourceSummary         `json:"resources"`
-	RecentActions   []EngineAction         `json:"recent_actions"`
-	Metrics         EngineMetrics          `json:"metrics"`
+	Status           string          `json:"status"`
+	StartedAt        time.Time       `json:"started_at"`
+	LastHeartbeat    time.Time       `json:"last_heartbeat"`
+	WorkerCount      int             `json:"worker_count"`
+	ActiveWorkloads  int             `json:"active_workloads"`
+	PendingWorkloads int             `json:"pending_workloads"`
+	Clusters         []ClusterStatus `json:"clusters"`
+	Resources        ResourceSummary `json:"resources"`
+	RecentActions    []EngineAction  `json:"recent_actions"`
+	Metrics          EngineMetrics   `json:"metrics"`
 }
 
 // ClusterStatus represents the status of a cluster
 type ClusterStatus struct {
-	ID             uuid.UUID `json:"id"`
-	Name           string    `json:"name"`
-	Region         string    `json:"region"`
-	Zone           string    `json:"zone"`
-	Status         string    `json:"status"`
-	TotalCPU       int64     `json:"total_cpu"`
-	UsedCPU        int64     `json:"used_cpu"`
-	TotalMemory    int64     `json:"total_memory"`
-	UsedMemory     int64     `json:"used_memory"`
-	TotalStorage   int64     `json:"total_storage"`
-	UsedStorage    int64     `json:"used_storage"`
-	TotalGPU       int64     `json:"total_gpu"`
-	UsedGPU        int64     `json:"used_gpu"`
-	WorkloadCount  int       `json:"workload_count"`
+	ID            uuid.UUID `json:"id"`
+	Name          string    `json:"name"`
+	Region        string    `json:"region"`
+	Zone          string    `json:"zone"`
+	Status        string    `json:"status"`
+	TotalCPU      int64     `json:"total_cpu"`
+	UsedCPU       int64     `json:"used_cpu"`
+	TotalMemory   int64     `json:"total_memory"`
+	UsedMemory    int64     `json:"used_memory"`
+	TotalStorage  int64     `json:"total_storage"`
+	UsedStorage   int64     `json:"used_storage"`
+	TotalGPU      int64     `json:"total_gpu"`
+	UsedGPU       int64     `json:"used_gpu"`
+	WorkloadCount int       `json:"workload_count"`
 }
 
 // ResourceSummary represents a summary of resources
 type ResourceSummary struct {
-	TotalCPU    int64 `json:"total_cpu"`
-	UsedCPU     int64 `json:"used_cpu"`
-	AvailableCPU int64 `json:"available_cpu"`
-	TotalMemory int64 `json:"total_memory"`
-	UsedMemory  int64 `json:"used_memory"`
-	AvailableMemory int64 `json:"available_memory"`
-	TotalStorage int64 `json:"total_storage"`
-	UsedStorage  int64 `json:"used_storage"`
+	TotalCPU         int64 `json:"total_cpu"`
+	UsedCPU          int64 `json:"used_cpu"`
+	AvailableCPU     int64 `json:"available_cpu"`
+	TotalMemory      int64 `json:"total_memory"`
+	UsedMemory       int64 `json:"used_memory"`
+	AvailableMemory  int64 `json:"available_memory"`
+	TotalStorage     int64 `json:"total_storage"`
+	UsedStorage      int64 `json:"used_storage"`
 	AvailableStorage int64 `json:"available_storage"`
-	TotalGPU    int64 `json:"total_gpu"`
-	UsedGPU     int64 `json:"used_gpu"`
-	AvailableGPU int64 `json:"available_gpu"`
+	TotalGPU         int64 `json:"total_gpu"`
+	UsedGPU          int64 `json:"used_gpu"`
+	AvailableGPU     int64 `json:"available_gpu"`
 }
 
 // EngineAction represents an action taken by the engine
@@ -122,8 +121,8 @@ func NewWaterfallEngine(cfg *config.Config, db *pgxpool.Pool, redis *redis.Clien
 		startedAt:     time.Now(),
 		lastHeartbeat: time.Now(),
 		status: EngineStatus{
-			Status:     "initializing",
-			StartedAt:  time.Now(),
+			Status:      "initializing",
+			StartedAt:   time.Now(),
 			WorkerCount: cfg.Waterfall.WorkerCount,
 		},
 	}
@@ -246,8 +245,9 @@ func (e *WaterfallEngine) processWorkload(workload *models.Workload) {
 	startTime := time.Now()
 
 	// Update status
+	now := time.Now()
 	workload.Status = models.WorkloadStatusProcessing
-	workload.StartedAt = time.Now()
+	workload.StartedAt = &now
 
 	// Log action
 	e.recordAction("processing", workload.ID.String(), fmt.Sprintf("Started processing workload %s", workload.Name))
@@ -296,10 +296,10 @@ func (e *WaterfallEngine) processWorkload(workload *models.Workload) {
 		log.Printf("Failed to execute workload %s: %v", workload.ID, err)
 		workload.Status = models.WorkloadStatusFailed
 		workload.FailureReason = fmt.Sprintf("Execution failed: %v", err)
-		
+
 		// Free resource
 		e.resourceManager.FreeResource(resource.ID, workload)
-		
+
 		// Check if we should retry
 		if workload.Retries < e.config.Waterfall.MaxRetries {
 			workload.Retries++
@@ -314,10 +314,13 @@ func (e *WaterfallEngine) processWorkload(workload *models.Workload) {
 	}
 
 	// Workload completed successfully
+	completed := time.Now()
 	workload.Status = models.WorkloadStatusCompleted
-	workload.CompletedAt = time.Now()
-	workload.ExecutionTime = workload.CompletedAt.Sub(workload.StartedAt)
-	
+	workload.CompletedAt = &completed
+	if workload.StartedAt != nil {
+		workload.ExecutionTime = completed.Sub(*workload.StartedAt)
+	}
+
 	// Free resource
 	e.resourceManager.FreeResource(resource.ID, workload)
 
@@ -343,7 +346,7 @@ func (e *WaterfallEngine) executeWorkload(workload *models.Workload, resource *m
 	time.Sleep(100 * time.Millisecond)
 
 	// Simulate occasional failures
-	if workload.ID.UUID[0]%20 == 0 {
+	if workload.ID[0]%20 == 0 {
 		return fmt.Errorf("simulated execution failure")
 	}
 
@@ -444,7 +447,7 @@ func (e *WaterfallEngine) updateMetrics(workload *models.Workload, startTime tim
 	} else if workload.Status == models.WorkloadStatusFailed {
 		e.status.Metrics.WorkloadsFailed++
 	}
-	
+
 	e.status.Metrics.WorkloadsScheduled++
 }
 

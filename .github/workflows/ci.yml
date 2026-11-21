@@ -1,0 +1,115 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  GO_VERSION: '1.22'
+
+jobs:
+  services:
+    name: Services - vet, build and test
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        service:
+          - control-api
+          - waterfall
+          - identity
+          - compute
+          - storage
+          - network
+          - security
+          - billing
+          - audit
+          - ai-platform
+          - hpc
+          - quantum-broker
+          - government
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+
+      - name: Vet
+        working-directory: services/${{ matrix.service }}
+        run: go vet ./...
+
+      - name: Build
+        working-directory: services/${{ matrix.service }}
+        run: go build ./...
+
+      - name: Test
+        working-directory: services/${{ matrix.service }}
+        run: go test ./... -count=1
+
+  adapters:
+    name: Adapters - vet and build
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        adapter: [kubernetes, kvm, ceph, slurm, hsm, datacenter]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+
+      - name: Vet
+        working-directory: adapters/${{ matrix.adapter }}
+        run: go vet ./...
+
+      - name: Build
+        working-directory: adapters/${{ matrix.adapter }}
+        run: go build ./...
+
+  compose:
+    name: Validate compose and contracts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate docker-compose syntax
+        run: python3 -c "import yaml,sys; yaml.safe_load(open('docker-compose.yml'))"
+
+      - name: Validate OpenAPI and JSON schemas
+        run: |
+          python3 - <<'EOF'
+          import yaml, json, glob, sys
+          for spec in glob.glob('contracts/openapi/*.yaml'):
+              yaml.safe_load(open(spec))
+              print('ok', spec)
+          for schema in glob.glob('contracts/schemas/*.json'):
+              json.load(open(schema))
+              print('ok', schema)
+          EOF
+
+  docker:
+    name: Docker build (smoke)
+    runs-on: ubuntu-latest
+    needs: [services]
+    if: github.event_name == 'push'
+    strategy:
+      fail-fast: false
+      matrix:
+        service: [identity, compute, storage, network, security, billing, audit, ai-platform, hpc, quantum-broker, government]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build image
+        run: docker build -t brlia-${{ matrix.service }}:${{ github.sha }} services/${{ matrix.service }}

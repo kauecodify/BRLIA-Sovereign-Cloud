@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BRLIA - Portal do Desenvolvedor</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo"><span class="logo-text">BRLIA</span></div>
+                <div class="sidebar-title">Portal do Desenvolvedor</div>
+            </div>
+            <div class="nav-section">
+                <div class="nav-section-title">Principal</div>
+                <a href="#" class="nav-item active" data-page="dashboard">
+                    <span class="nav-icon">&#9679;</span>
+                    <span>Dashboard</span>
+                </a>
+            </div>
+            <div class="nav-section" id="nav-sections"></div>
+            <div class="sidebar-footer">
+                <span class="env-badge">esqueleto v0.1</span>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <header class="topbar">
+                <h1 id="page-title">Dashboard</h1>
+                <div class="status-chip" id="status-chip">verificando</div>
+            </header>
+
+            <section class="page">
+                <div class="card">
+                    <h2>Estado da plataforma</h2>
+                    <p id="platform-status" class="muted">Consultando a API de Controle...</p>
+                    <pre id="raw-status" class="raw"></pre>
+                </div>
+
+                <div class="card">
+                    <h2>Sobre esta interface</h2>
+                    <p>
+                        Este portal faz parte da estrutura da BRLIA Sovereign Cloud e expoe
+                        a navegacao e o estado basico da plataforma. As funcionalidades de
+                        <strong>Portal do Desenvolvedor</strong> serao implementadas conforme os contratos
+                        em <code>contracts/openapi</code>.
+                    </p>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>

@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/brlia/control-api/internal/models"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/brlia/control-api/internal/models"
 )
 
 // AuditRepository handles database operations for audit logs

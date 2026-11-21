@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -9,12 +10,12 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/gin-gonic/gin"
 	"github.com/brlia/waterfall/internal/config"
 	"github.com/brlia/waterfall/internal/engine"
 	"github.com/brlia/waterfall/internal/handlers"
 	"github.com/brlia/waterfall/internal/middleware"
 	"github.com/brlia/waterfall/internal/repository"
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
@@ -29,7 +30,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("Failed to connect to database: %v", err)
 	}
-	defer db.Close(context.Background())
+	defer db.Close()
 
 	// Initialize Redis connection
 	redisClient, err := repository.NewRedisClient(cfg.Redis)
@@ -53,9 +54,15 @@ func main() {
 
 	// Global middleware
 	router.Use(gin.Recovery())
-	router.Use(gin.LoggerWithConfig(gin.LoggerConfig{
-		Format: "[BRLIA-WATERFALL] '${time_stamp}' '${method}' '${path}' '${status}' '${latency}' '${error}'\n",
-		TimestampFormat: time.RFC3339,
+	router.Use(gin.LoggerWithFormatter(func(param gin.LogFormatterParams) string {
+		return fmt.Sprintf("[BRLIA-WATERFALL] '%s' '%s' '%s' '%d' '%s' '%s'\n",
+			time.Now().UTC().Format(time.RFC3339),
+			param.Method,
+			param.Path,
+			param.StatusCode,
+			param.Latency,
+			param.ErrorMessage,
+		)
 	}))
 	router.Use(middleware.CORSMiddleware())
 	router.Use(middleware.RequestIDMiddleware())
@@ -84,7 +91,7 @@ func main() {
 			authGroup.DELETE("/workloads/:id", handlers.DeleteWorkloadHandler(waterfallEngine))
 
 			// Resource management
-			authGroup.GET("/resources", handlers.ListResourcesHandler(waterfallEngine))
+			authGroup.GET("/resources", handlers.ListResourcesHandler())
 			authGroup.GET("/resources/:id", handlers.GetResourceHandler(waterfallEngine))
 
 			// Capacity management

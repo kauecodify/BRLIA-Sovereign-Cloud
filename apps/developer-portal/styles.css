@@ -1,0 +1,173 @@
+:root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface-2: #1c2128;
+    --border: #30363d;
+    --text: #e6edf3;
+    --text-muted: #8d96a0;
+    --accent: #009c3b;
+    --accent-2: #ffdf00;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+}
+
+.app-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 240px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    padding: 16px 0;
+}
+
+.sidebar-header {
+    padding: 8px 16px 20px;
+    border-bottom: 1px solid var(--border);
+}
+
+.logo-text {
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--accent-2);
+}
+
+.sidebar-title {
+    margin-top: 4px;
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.nav-section {
+    padding: 16px 8px;
+}
+
+.nav-section-title {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    padding: 0 8px 8px;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    color: var(--text);
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.nav-item:hover {
+    background: var(--surface-2);
+}
+
+.nav-item.active {
+    background: var(--surface-2);
+    border-left: 2px solid var(--accent);
+}
+
+.nav-icon {
+    color: var(--accent);
+    font-size: 10px;
+}
+
+.sidebar-footer {
+    margin-top: auto;
+    padding: 16px;
+}
+
+.env-badge {
+    font-size: 11px;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    padding: 2px 8px;
+    border-radius: 10px;
+}
+
+.main-content {
+    flex: 1;
+    padding: 24px 32px;
+}
+
+.topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+}
+
+.topbar h1 {
+    font-size: 22px;
+    font-weight: 600;
+}
+
+.status-chip {
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+}
+
+.status-chip.ok {
+    color: var(--accent);
+    border-color: var(--accent);
+}
+
+.status-chip.down {
+    color: #f85149;
+    border-color: #f85149;
+}
+
+.page {
+    display: grid;
+    gap: 16px;
+    max-width: 860px;
+}
+
+.card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.card h2 {
+    font-size: 15px;
+    margin-bottom: 12px;
+}
+
+.muted {
+    color: var(--text-muted);
+    font-size: 14px;
+}
+
+.raw {
+    margin-top: 12px;
+    padding: 12px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 12px;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    color: var(--text);
+}

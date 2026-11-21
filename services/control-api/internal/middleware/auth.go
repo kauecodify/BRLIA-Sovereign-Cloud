@@ -4,9 +4,9 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/brlia/control-api/internal/config"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/brlia/control-api/internal/config"
 )
 
 // AuthMiddleware validates JWT tokens
@@ -51,7 +51,7 @@ func AuthMiddleware(cfg config.AuthConfig) gin.HandlerFunc {
 
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{
-				"error": "Invalid token",
+				"error":   "Invalid token",
 				"details": err.Error(),
 			})
 			c.Abort()
@@ -175,7 +175,7 @@ func RBACMiddleware(requiredRoles ...string) gin.HandlerFunc {
 
 		if !hasPermission {
 			c.JSON(http.StatusForbidden, gin.H{
-				"error": "Insufficient permissions",
+				"error":          "Insufficient permissions",
 				"required_roles": requiredRoles,
 			})
 			c.Abort()

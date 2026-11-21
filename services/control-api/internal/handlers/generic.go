@@ -30,33 +30,33 @@ func NotImplementedHandler() gin.HandlerFunc {
 func ListResourcesHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		resourceType := c.DefaultQuery("type", "")
-		
+
 		resources := []gin.H{}
-		
+
 		if resourceType == "" || resourceType == "vm" {
 			resources = append(resources, gin.H{
-				"id":   "vm-001",
-				"type": "vm",
-				"name": "Virtual Machine 1",
+				"id":     "vm-001",
+				"type":   "vm",
+				"name":   "Virtual Machine 1",
 				"status": "running",
-				"cpu":   4,
+				"cpu":    4,
 				"memory": 8192,
 			})
 		}
-		
+
 		if resourceType == "" || resourceType == "storage" {
 			resources = append(resources, gin.H{
-				"id":   "storage-001",
-				"type": "storage",
-				"name": "Block Storage 1",
+				"id":     "storage-001",
+				"type":   "storage",
+				"name":   "Block Storage 1",
 				"status": "available",
-				"size":  100,
+				"size":   100,
 			})
 		}
-		
+
 		c.JSON(http.StatusOK, gin.H{
 			"resources": resources,
-			"total":    len(resources),
+			"total":     len(resources),
 		})
 	}
 }
@@ -65,9 +65,9 @@ func ListResourcesHandler() gin.HandlerFunc {
 func GetResourcesByTypeHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		resourceType := c.Param("type")
-		
+
 		var resources []gin.H
-		
+
 		switch resourceType {
 		case "vm":
 			resources = []gin.H{
@@ -85,11 +85,11 @@ func GetResourcesByTypeHandler() gin.HandlerFunc {
 		default:
 			resources = []gin.H{}
 		}
-		
+
 		c.JSON(http.StatusOK, gin.H{
 			"resources": resources,
-			"type":     resourceType,
-			"total":    len(resources),
+			"type":      resourceType,
+			"total":     len(resources),
 		})
 	}
 }
@@ -98,9 +98,9 @@ func GetResourcesByTypeHandler() gin.HandlerFunc {
 func GetCostsHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
-			"total_cost":    0.0,
-			"currency":      "BRL",
-			"period":        "current_month",
+			"total_cost": 0.0,
+			"currency":   "BRL",
+			"period":     "current_month",
 			"breakdown": []gin.H{
 				{"category": "compute", "cost": 0.0, "usage": "0 hours"},
 				{"category": "storage", "cost": 0.0, "usage": "0 GB"},

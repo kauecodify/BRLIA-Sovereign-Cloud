@@ -1,0 +1,455 @@
+openapi: 3.0.3
+info:
+  title: BRLIA Control API
+  version: 0.1.0
+  description: >
+    Control Plane da BRLIA Sovereign Cloud. Gerencia organizacoes, projetos,
+    usuarios, roles, quotas, regioes e trilha de auditoria.
+  license:
+    name: BSD 3-Clause
+servers:
+  - url: http://localhost:8080
+    description: Desenvolvimento local
+tags:
+  - name: auth
+  - name: organizations
+  - name: projects
+  - name: users
+  - name: roles
+  - name: quotas
+  - name: regions
+  - name: audit
+paths:
+  /health:
+    get:
+      tags: [auth]
+      summary: Health check
+      responses:
+        '200':
+          description: Servico saudavel
+  /ready:
+    get:
+      tags: [auth]
+      summary: Readiness check (PostgreSQL e Redis)
+      responses:
+        '200': { description: Pronto }
+        '503': { description: Dependencias indisponiveis }
+  /api/v1/auth/token:
+    post:
+      tags: [auth]
+      summary: Emite tokens de acesso e refresh
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Tokens emitidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+  /api/v1/auth/refresh:
+    post:
+      tags: [auth]
+      summary: Renova token de acesso
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefreshRequest'
+      responses:
+        '200':
+          description: Token renovado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefreshResponse'
+        '401': { $ref: '#/components/responses/Unauthorized' }
+  /api/v1/organizations:
+    get:
+      tags: [organizations]
+      summary: Lista organizacoes
+      parameters:
+        - { name: page, in: query, schema: { type: integer, default: 1 } }
+        - { name: limit, in: query, schema: { type: integer, default: 20 } }
+        - { name: name, in: query, schema: { type: string } }
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200':
+          description: Lista paginada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationListResponse'
+    post:
+      tags: [organizations]
+      summary: Cria organizacao
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrganizationCreateRequest'
+      responses:
+        '201':
+          description: Criada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationResponse'
+  /api/v1/organizations/{id}:
+    parameters:
+      - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+    get:
+      tags: [organizations]
+      summary: Detalha organizacao
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200':
+          description: Detalhes
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationResponse'
+        '404': { $ref: '#/components/responses/NotFound' }
+    put:
+      tags: [organizations]
+      summary: Atualiza organizacao
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: Atualizada }
+        '404': { $ref: '#/components/responses/NotFound' }
+    delete:
+      tags: [organizations]
+      summary: Remove organizacao
+      security: [{ bearerAuth: [] }]
+      responses:
+        '204': { description: Removida }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /api/v1/projects:
+    get:
+      tags: [projects]
+      summary: Lista projetos
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - { name: page, in: query, schema: { type: integer } }
+        - { name: limit, in: query, schema: { type: integer } }
+      responses:
+        '200':
+          description: Lista paginada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectListResponse'
+    post:
+      tags: [projects]
+      summary: Cria projeto
+      security: [{ bearerAuth: [] }]
+      responses:
+        '201': { description: Criado }
+  /api/v1/projects/{id}:
+    parameters:
+      - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+    get:
+      tags: [projects]
+      summary: Detalha projeto
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: Detalhes }
+        '404': { $ref: '#/components/responses/NotFound' }
+    put:
+      tags: [projects]
+      summary: Atualiza projeto
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: Atualizado }
+    delete:
+      tags: [projects]
+      summary: Remove projeto
+      security: [{ bearerAuth: [] }]
+      responses:
+        '204': { description: Removido }
+  /api/v1/users:
+    get:
+      tags: [users]
+      summary: Lista usuarios
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200':
+          description: Lista paginada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserListResponse'
+    post:
+      tags: [users]
+      summary: Cria usuario
+      security: [{ bearerAuth: [] }]
+      responses:
+        '201': { description: Criado }
+  /api/v1/users/{id}:
+    parameters:
+      - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+    get:
+      tags: [users]
+      summary: Detalha usuario
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: Detalhes }
+    put:
+      tags: [users]
+      summary: Atualiza usuario
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: Atualizado }
+    delete:
+      tags: [users]
+      summary: Remove usuario
+      security: [{ bearerAuth: [] }]
+      responses:
+        '204': { description: Removido }
+  /api/v1/roles:
+    get:
+      tags: [roles]
+      summary: Lista roles
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: Lista paginada }
+    post:
+      tags: [roles]
+      summary: Cria role
+      security: [{ bearerAuth: [] }]
+      responses:
+        '201': { description: Criado }
+  /api/v1/roles/{id}:
+    parameters:
+      - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+    get:
+      tags: [roles]
+      summary: Detalha role
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: Detalhes }
+    put:
+      tags: [roles]
+      summary: Atualiza role
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: Atualizado }
+    delete:
+      tags: [roles]
+      summary: Remove role
+      security: [{ bearerAuth: [] }]
+      responses:
+        '204': { description: Removido }
+  /api/v1/quotas:
+    get:
+      tags: [quotas]
+      summary: Lista quotas
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: Lista paginada }
+    post:
+      tags: [quotas]
+      summary: Cria quota
+      security: [{ bearerAuth: [] }]
+      responses:
+        '201': { description: Criada }
+  /api/v1/quotas/{id}:
+    parameters:
+      - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+    get:
+      tags: [quotas]
+      summary: Detalha quota
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: Detalhes }
+    put:
+      tags: [quotas]
+      summary: Atualiza quota
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: Atualizada }
+  /api/v1/regions:
+    get:
+      tags: [regions]
+      summary: Lista regioes
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: Lista paginada }
+    post:
+      tags: [regions]
+      summary: Cria regiao
+      security: [{ bearerAuth: [] }]
+      responses:
+        '201': { description: Criada }
+  /api/v1/regions/{id}:
+    parameters:
+      - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+    get:
+      tags: [regions]
+      summary: Detalha regiao
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: Detalhes }
+  /api/v1/audit/logs:
+    get:
+      tags: [audit]
+      summary: Lista trilha de auditoria
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: Lista paginada }
+  /api/v1/audit/logs/{id}:
+    parameters:
+      - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+    get:
+      tags: [audit]
+      summary: Detalha entrada de auditoria
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: Detalhes }
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  responses:
+    BadRequest:
+      description: Requisicao invalida
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    Unauthorized:
+      description: Nao autenticado
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    NotFound:
+      description: Nao encontrado
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+  schemas:
+    Error:
+      type: object
+      properties:
+        error: { type: string }
+        details: { type: string }
+    LoginRequest:
+      type: object
+      required: [username, password]
+      properties:
+        username: { type: string }
+        password: { type: string, format: password }
+    LoginResponse:
+      type: object
+      properties:
+        access_token: { type: string }
+        refresh_token: { type: string }
+        token_type: { type: string, example: Bearer }
+        expires_in: { type: integer, format: int64 }
+        user_id: { type: string, format: uuid }
+        username: { type: string }
+        display_name: { type: string }
+        email: { type: string }
+        mfa_required: { type: boolean }
+    TokenRefreshRequest:
+      type: object
+      required: [refresh_token]
+      properties:
+        refresh_token: { type: string }
+    TokenRefreshResponse:
+      type: object
+      properties:
+        access_token: { type: string }
+        refresh_token: { type: string }
+        token_type: { type: string }
+        expires_in: { type: integer, format: int64 }
+    UUID:
+      type: string
+      format: uuid
+    Timestamp:
+      type: string
+      format: date-time
+    OrganizationResponse:
+      type: object
+      properties:
+        id: { $ref: '#/components/schemas/UUID' }
+        name: { type: string }
+        description: { type: string }
+        status: { type: string, enum: [active, inactive, pending, suspended] }
+        created_at: { $ref: '#/components/schemas/Timestamp' }
+        updated_at: { $ref: '#/components/schemas/Timestamp' }
+        metadata: { type: object, additionalProperties: { type: string } }
+        project_count: { type: integer }
+        user_count: { type: integer }
+    OrganizationListResponse:
+      type: object
+      properties:
+        organizations:
+          type: array
+          items: { $ref: '#/components/schemas/OrganizationResponse' }
+        total: { type: integer, format: int64 }
+        page: { type: integer }
+        page_size: { type: integer }
+        total_pages: { type: integer }
+    OrganizationCreateRequest:
+      type: object
+      required: [name]
+      properties:
+        name: { type: string, minLength: 1, maxLength: 100 }
+        description: { type: string }
+        metadata: { type: object, additionalProperties: { type: string } }
+    ProjectListResponse:
+      type: object
+      properties:
+        projects:
+          type: array
+          items: { $ref: '#/components/schemas/ProjectResponse' }
+        total: { type: integer, format: int64 }
+        page: { type: integer }
+        page_size: { type: integer }
+        total_pages: { type: integer }
+    ProjectResponse:
+      type: object
+      properties:
+        id: { $ref: '#/components/schemas/UUID' }
+        organization_id: { $ref: '#/components/schemas/UUID' }
+        name: { type: string }
+        description: { type: string }
+        status: { type: string, enum: [active, inactive, pending, suspended, archived] }
+        region_id: { $ref: '#/components/schemas/UUID' }
+        created_at: { $ref: '#/components/schemas/Timestamp' }
+        resource_count: { type: integer }
+        user_count: { type: integer }
+    UserListResponse:
+      type: object
+      properties:
+        users:
+          type: array
+          items: { $ref: '#/components/schemas/UserResponse' }
+        total: { type: integer, format: int64 }
+        page: { type: integer }
+        page_size: { type: integer }
+        total_pages: { type: integer }
+    UserResponse:
+      type: object
+      properties:
+        id: { $ref: '#/components/schemas/UUID' }
+        organization_id: { $ref: '#/components/schemas/UUID' }
+        email: { type: string, format: email }
+        username: { type: string }
+        display_name: { type: string }
+        status: { type: string, enum: [active, inactive, pending, suspended, locked] }
+        mfa_enabled: { type: boolean }
+        last_login: { $ref: '#/components/schemas/Timestamp' }
+        created_at: { $ref: '#/components/schemas/Timestamp' }
+        role_count: { type: integer }

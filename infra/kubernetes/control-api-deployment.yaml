@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: control-api
+  namespace: brlia
+  labels:
+    app: control-api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: control-api
+  template:
+    metadata:
+      labels:
+        app: control-api
+    spec:
+      containers:
+        - name: control-api
+          image: ghcr.io/kauecodify/brlia-control-api:latest
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: control-api-config
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 8080
+            initialDelaySeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 10
+          resources:
+            requests:
+              cpu: 250m
+              memory: 256Mi
+            limits:
+              cpu: "1"
+              memory: 512Mi

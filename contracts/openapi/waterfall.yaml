@@ -1,0 +1,151 @@
+openapi: 3.0.3
+info:
+  title: BRLIA Waterfall Engine API
+  version: 0.1.0
+  description: >
+    Motor inteligente de orquestracao e distribuicao de recursos da BRLIA
+    Sovereign Cloud.
+  license:
+    name: BSD 3-Clause
+servers:
+  - url: http://localhost:8081
+paths:
+  /health:
+    get:
+      summary: Health check
+      responses:
+        '200': { description: Servico saudavel }
+  /ready:
+    get:
+      summary: Readiness check (PostgreSQL, Redis e engine)
+      responses:
+        '200': { description: Pronto }
+        '503': { description: Dependencias indisponiveis }
+  /api/v1/status:
+    get:
+      summary: Estado do engine
+      responses:
+        '200': { description: Estado atual do engine }
+  /api/v1/workloads:
+    get:
+      summary: Lista workloads
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: Lista de workloads }
+    post:
+      summary: Cria e submete um workload
+      security: [{ bearerAuth: [] }]
+      responses:
+        '201': { description: Workload criado e enfileirado }
+        '400': { description: Requisicao invalida }
+        '429': { description: Filas cheias }
+  /api/v1/workloads/{id}:
+    parameters:
+      - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+    get:
+      summary: Detalha workload
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: Detalhes }
+        '404': { description: Nao encontrado }
+    put:
+      summary: Atualiza workload
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: Atualizado }
+    delete:
+      summary: Remove workload
+      security: [{ bearerAuth: [] }]
+      responses:
+        '204': { description: Removido }
+  /api/v1/resources:
+    get:
+      summary: Lista recursos de infraestrutura
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: Lista de recursos }
+  /api/v1/resources/{id}:
+    parameters:
+      - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+    get:
+      summary: Detalha recurso
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: Detalhes }
+        '404': { description: Nao encontrado }
+  /api/v1/capacity:
+    get:
+      summary: Capacidade atual
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: Resumo de capacidade }
+  /api/v1/capacity/forecast:
+    get:
+      summary: Previsao de capacidade
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: Previsao por horizonte }
+  /api/v1/queues:
+    get:
+      summary: Lista filas
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: Filas configuradas }
+  /api/v1/schedule:
+    get:
+      summary: Visualizacao do agendamento
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: Agenda atual }
+    post:
+      summary: Submete workload para agendamento imediato
+      security: [{ bearerAuth: [] }]
+      responses:
+        '202': { description: Aceito para agendamento }
+  /api/v1/policies:
+    get:
+      summary: Lista politicas
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: Politicas }
+    post:
+      summary: Cria politica
+      security: [{ bearerAuth: [] }]
+      responses:
+        '201': { description: Politica criada }
+  /api/v1/metrics:
+    get:
+      summary: Metricas do engine
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: Metricas }
+  /api/v1/costs/optimization:
+    get:
+      summary: Sugestoes de otimizacao de custo
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: Sugestoes }
+  /api/v1/failures:
+    get:
+      summary: Falhas detectadas
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: Falhas }
+  /api/v1/recover:
+    post:
+      summary: Dispara recuperacao de cargas falhadas
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: Recuperacao disparada }
+  /api/v1/clusters:
+    get:
+      summary: Lista clusters
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: Clusters conhecidos }
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
